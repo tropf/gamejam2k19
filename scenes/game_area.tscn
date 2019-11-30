@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://scenes/Ball.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/Wall.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/gravity_point.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/graphics/wallpaper.png" type="Texture" id=4]
+[ext_resource path="res://ui/Interface.tscn" type="PackedScene" id=5]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
@@ -136,20 +138,23 @@ script = SubResource( 1 )
 position = Vector2( 110.681, 148.334 )
 
 [node name="Ball2" parent="." instance=ExtResource( 1 )]
+visible = false
 position = Vector2( 535.021, 306.081 )
 
 [node name="Ball3" parent="." instance=ExtResource( 1 )]
+visible = false
 position = Vector2( 947.698, 69.8578 )
 
 [node name="WallUp" parent="." instance=ExtResource( 2 )]
-position = Vector2( 512.746, 1.67015 )
-scale = Vector2( 0.2, 0.2 )
+position = Vector2( 512.746, 25.6701 )
+scale = Vector2( 0.2, 0.1 )
 
 [node name="WallDown" parent="." instance=ExtResource( 2 )]
-position = Vector2( 511.075, 601.266 )
-scale = Vector2( 0.2, 0.2 )
+position = Vector2( 511.075, 576.266 )
+scale = Vector2( 0.2, 0.1 )
 
 [node name="GravityPoint" parent="." instance=ExtResource( 3 )]
+modulate = Color( 0.101961, 0, 1, 1 )
 position = Vector2( 419.216, 93.5302 )
 mass = 100.0
 gravity_scale = 128.0
@@ -158,5 +163,15 @@ gravity_scale = 128.0
 position = Vector2( 261.471, 339.698 )
 mass = 100.0
 gravity_scale = 128.0
+
+[node name="Wallpaper" type="Sprite" parent="."]
+z_index = -10
+texture = ExtResource( 4 )
+centered = false
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Interface" parent="." instance=ExtResource( 5 )]
 [connection signal="game_over" from="." to="." method="_on_World_game_over"]
 [connection signal="hit" from="Ball1" to="." method="_on_Ball1_hit"]
