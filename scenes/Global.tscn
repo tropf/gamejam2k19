@@ -10,7 +10,7 @@ script/source = "extends Node2D
 var gravityobjects=[]
 export var gravity = 1000000000
 var peer
-var main_scene = preload(\"res://scenes/testscene.tscn\")
+var main_scene = preload(\"res://scenes/game_area.tscn\")
 
 signal connection_established
 signal connection_closed

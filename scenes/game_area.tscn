@@ -11,6 +11,7 @@ signal game_over
 
 var screen_size = null
 var clicked = false
+var gh_active = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,7 +23,71 @@ func _ready():
 	
 	screen_size = get_viewport_rect().size
 
+	# paused by default
+	get_tree().set_pause(true)
+
+	# in case network connection: synchronized start procedure
+	if Global.peer:
+		print(\"real mode\")
+		get_tree().set_network_peer(Global.peer)
+		#start_game()
+		start_countdown()
+	else:
+		print(\"testing mode\")
+		start_game()
+
+	Global.connect(\"recv_indicate_rdy\", self, \"recv_indicate_rdy\")
+	Global.connect(\"recv_indicate_start\", self, \"recv_indicate_start\")
+
+func start_countdown():
+	# situation: i am client, i indicate to server that i am rdy
+	print(\"sending rdy signal...\")
+	Global.send_indicate_rdy()
+
+func recv_indicate_rdy():
+	# only during pre-start
+	if !get_tree().is_paused():
+		return
+	# if client: respond rdy
+	if !Global.is_server():
+		Global.send_indicate_rdy()
+	# if server: respond go!
+	if Global.is_server():
+		print(\"acknowledging rdy signal\")
+		Global.send_indicate_start()
+		print(\"starting game\")
+		start_game()
+
+func recv_indicate_start():
+	# situation: i am client, indicated rdy, recv ack
+	print(\"recv rdy ack, starting\")
+	start_game()
+
+func start_game():
+	get_tree().set_pause(false)
+
+# rgh: remote gravity hole
+func rgh_spawn(id, pos):
+	print(\"create gravity hole at: \", pos)
+
+func rgh_mv(id, pos):
+	print(\"mv gravity hole to: \", pos)
+
+func rgh_rm(id):
+	print(\"rm gravity hole nr: \", id)
+
 func _input(event):
+	if event is InputEventMouseButton:
+		if event.pressed:
+			Global.send_rgh_spawn(1, event.position)
+			gh_active = true
+		else:
+			Global.send_rgh_rm(1)
+			gh_active = false
+	elif event is InputEventMouseMotion:
+		if gh_active:
+			Global.send_rgh_mv(1, event.position)
+
 	if event is InputEventMouseButton:
 		#$GravityHole.position = event.position
 		clicked = not clicked
