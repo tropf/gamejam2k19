@@ -41,7 +41,7 @@ func _ready():
 	remove_child($Ball3)
 	
 	screen_size = get_viewport_rect().size
-	startpos = Vector2(screen_size.x / 4, screen_size.y / 2)
+	startpos = Vector2(screen_size.x / 8, screen_size.y / 2)
 	new_ball1()
 	
 	$RemoteGravityPoint/CollisionShape2D.set_modulate(Color(0, 80, 0, 50))
@@ -164,6 +164,9 @@ func _process(delta):
 			print(\"Ball1 outside of viewport! pos: \", ball1.position)
 			new_ball1()
 
+	if !Global.peer:
+		return
+		
 	if ball_responsible:
 		# transmit position
 		Global.send_br_pos(ball1.position, ball1.linear_velocity, ball1.angular_velocity)
@@ -173,19 +176,24 @@ func _process(delta):
 		if screen_size.x * (0.5 + handover_margin) < ball1.position.x:
 			print(\"current x: \", ball1.position.x, \"; handover margin: \", screen_size.x * (0.5 + handover_margin))
 			# send handover
-			Global.send_br_your_turn()
+			Global.send_br_your_turn(ball1.position, ball1.linear_velocity, ball1.angular_velocity)
 			# change resonsibility locally
 			ball_responsible = false
+			ball1.set_mode(1)
 
 func recv_br_pos(pos, lvel, avel):
 	if !ball_responsible:
 		ball1.position = remote_pos_to_local(pos)
 		ball1.linear_velocity = remote_vel_to_local(lvel)
-		ball1.angular_velocity = -1 * avel
+		ball1.angular_velocity = avel
 
-func recv_br_your_turn():
+func recv_br_your_turn(pos, lvel, avel):
 	# other side tells us we have the ball responsibility
+	ball1.position = remote_pos_to_local(pos)
+	ball1.linear_velocity = remote_vel_to_local(lvel)
+	ball1.angular_velocity = avel
 	ball_responsible = true
+	ball1.set_mode(0)
 
 func is_node_in_viewport(node):
 	if screen_size.x >= node.position.x and screen_size.y >= node.position.y and node.position.x >= 0 and node.position.y >= 0:

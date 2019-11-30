@@ -97,13 +97,13 @@ remote func rgh_rm(id):
 	print(\"rm gravity hole nr: \", id)
 	emit_signal(\"rgh_rm\", id)
 	
-func send_br_your_turn():
+func send_br_your_turn(pos, lvel, avel):
 	print(\"handover of ball responsibility\")
 	rpc(\"br_your_turn\")
 	
-remote func br_your_turn():
+remote func br_your_turn(pos, lvel, avel):
 	print(\"received ball responsibility handover\")
-	emit_signal(\"br_your_turn\")
+	emit_signal(\"br_your_turn\", pos, lvel, avel)
 	
 func send_br_pos(pos, lvel, avel):
 	rpc_unreliable(\"br_pos\", pos, lvel, avel)

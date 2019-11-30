@@ -15,7 +15,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Neues Spiel"
+config/name="Gravity Pong"
 run/main_scene="res://scenes/game_area.tscn"
 config/icon="res://icon.png"
 
