@@ -138,10 +138,6 @@ func move_gravity_hole(position):
 	else:
 		$GravityPoint.position = Vector2(-100000000000, -100000000000)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
 func _process(delta):
 	if ball_responsible:
 		# transmit position
