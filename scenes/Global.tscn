@@ -8,7 +8,7 @@ script/source = "extends Node2D
 # list of gameobjects, which will interact with gravity
 # add on spawn, delete when objects are destroyed !
 var gravityobjects=[]
-export var gravity = 10
+export var gravity = 1000000000
 "
 
 [node name="Global" type="Node2D"]

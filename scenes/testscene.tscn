@@ -1,19 +1,41 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scenes/Ball.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/Wall.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/gravity_hole.tscn" type="PackedScene" id=3]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = \"text\"
+var clicked = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	\"\"\"
+	Global.gravityobjects.erase($Ball2)
+	Global.gravityobjects.erase($Ball3)
+	remove_child($Ball2)
+	remove_child($Ball3)
+	\"\"\"
 	
+func _input(event):
+	if event is InputEventMouseButton:
+		#$GravityHole.position = event.position
+		clicked = not clicked
+		move_gravity_hole(event.position)
+	elif event is InputEventMouseMotion:
+		move_gravity_hole(event.position)
+		#print(\"Mouse Motion at: \", event.position)
+
+   	# Print the size of the viewport
+	#print(\"Viewport Resolution is: \", get_viewport_rect().size)
 	pass # Replace with function body.
 
+func move_gravity_hole(position):
+	if clicked:
+		$GravityHole.position = position
+	else:
+		$GravityHole.position = Vector2(100000000000, 100000000000)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
@@ -23,10 +45,33 @@ func _ready():
 script = SubResource( 1 )
 
 [node name="Ball1" parent="." instance=ExtResource( 1 )]
-position = Vector2( 289.391, 270.257 )
+position = Vector2( 110.681, 148.334 )
 
 [node name="Ball2" parent="." instance=ExtResource( 1 )]
-position = Vector2( 638.572, 184.157 )
+position = Vector2( 535.021, 306.081 )
 
 [node name="Ball3" parent="." instance=ExtResource( 1 )]
-position = Vector2( 899.262, 480.723 )
+position = Vector2( 947.698, 69.8578 )
+
+[node name="Wall" parent="." instance=ExtResource( 2 )]
+position = Vector2( 497.714, -11.6913 )
+scale = Vector2( 1, 0.1 )
+
+[node name="Wall2" parent="." instance=ExtResource( 2 )]
+position = Vector2( 481.013, 616.297 )
+scale = Vector2( 1, 0.1 )
+
+[node name="Wall3" parent="." instance=ExtResource( 2 )]
+position = Vector2( -15.0316, 151.987 )
+rotation = 1.5708
+scale = Vector2( 1, 0.1 )
+
+[node name="Wall4" parent="." instance=ExtResource( 2 )]
+position = Vector2( 1030.5, 207.103 )
+rotation = 1.5708
+scale = Vector2( 1, 0.1 )
+
+[node name="GravityHole" parent="." instance=ExtResource( 3 )]
+position = Vector2( 419.216, 93.5302 )
+mass = 100.0
+gravity_scale = 128.0

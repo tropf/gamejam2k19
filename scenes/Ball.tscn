@@ -20,15 +20,15 @@ func _process(delta):
 	for i in Global.gravityobjects:
 		#applied_force = (Global.gravity * (mass * i.get_node(\"RigidBody2D\").get_mass()) * delta)
 		if is_other_obj(i):
-			force += calc_force_btw_obj(i)
+			force += i.mass * calc_force_btw_obj(i)
 	#print(\"Force: \", force)
-	set_applied_force(force)
+	set_applied_force(delta * force)
 		
 func calc_force_btw_obj(ball):
 	# TODO: add masses
 	var dist = euclidian_distance(ball)
 	#print(\"dist \", dist)
-	return -10000000 * get_direction(ball) * Global.gravity/pow(dist, 2)
+	return -1 * get_direction(ball) * Global.gravity/pow(dist, 2)
 	
 func euclidian_distance(ball):
 	return sqrt(pow(self.position.x - ball.position.x, 2) + pow(self.position.y - ball.position.y, 2))
