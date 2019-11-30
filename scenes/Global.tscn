@@ -9,7 +9,91 @@ script/source = "extends Node2D
 # add on spawn, delete when objects are destroyed !
 var gravityobjects=[]
 export var gravity = 1000000000
-"
+var peer
+var main_scene = preload(\"res://scenes/testscene.tscn\")
+
+signal connection_established
+signal connection_closed
+signal recv_indicate_rdy
+signal recv_indicate_start
+signal rgh_spawn
+signal rgh_mv
+signal rgh_rm
+
+func _ready():
+	get_tree().connect(\"network_peer_connected\", self, \"_player_connected\")
+	get_tree().connect(\"network_peer_disconnected\", self, \"_player_disconnected\")
+	get_tree().connect(\"connection_failed\", self, \"_connected_fail\")
+	get_tree().connect(\"server_disconnected\", self, \"_server_disconnected\")
+	
+func init_client(server_ip):
+	peer = NetworkedMultiplayerENet.new()
+	peer.create_client(server_ip, 12395)
+	get_tree().set_network_peer(peer)
+
+func init_server():
+	peer = NetworkedMultiplayerENet.new()
+	peer.create_server(12395, 1)
+	get_tree().set_network_peer(peer)
+
+func send_ping():
+	print(\"sending ping...\")
+	rpc(\"recv_ping\")
+
+remote func recv_ping():
+	print(\"received ping\")
+
+func is_server():
+	return get_tree().is_network_server()
+
+func _player_connected(id):
+	emit_signal(\"connection_established\")
+	
+func _player_disconnected(id):
+	emit_signal(\"connection_closed\")
+	
+func _connected_fail():
+	emit_signal(\"connection_closed\")
+	
+func _server_disconnected():
+	emit_signal(\"connection_closed\")
+	
+	
+func send_indicate_rdy():
+	rpc(\"recv_indicate_rdy\")
+	
+remote func recv_indicate_rdy():
+	print(\"recv indicate rdy inside globul\")
+	emit_signal(\"recv_indicate_rdy\")
+
+func send_indicate_start():
+	rpc(\"recv_indicate_start\")
+
+remote func recv_indicate_start():
+	print(\"recv indicate start inside globul\")
+	emit_signal(\"recv_indicate_start\")
+
+# rgh: remote gravity hole
+func send_rgh_spawn(id, pos):
+	rpc(\"rgh_spawn\", id, pos)
+
+remote func rgh_spawn(id, pos):
+	print(\"create gravity hole at: \", pos)
+	emit_signal(\"rgh_spawn\", id, pos)
+
+func send_rgh_mv(id, pos):
+	rpc_unreliable(\"rgh_mv\", id, pos)
+
+remote func rgh_mv(id, pos):
+	print(\"mv gravity hole to: \", pos)
+	emit_signal(\"rgh_mv\", id, pos)
+	
+func send_rgh_rm(id):
+	rpc(\"rgh_rm\", id)
+	
+remote func rgh_rm(id):
+	print(\"rm gravity hole nr: \", id)
+	emit_signal(\"rgh_rm\", id)"
 
 [node name="Global" type="Node2D"]
 script = SubResource( 1 )

@@ -1,0 +1,52 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/fonts/regular.tres" type="DynamicFont" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	Global.connect(\"connection_established\", self, \"connection_rdy\")
+	Global.connect(\"connection_closed\", self, \"connection_done\")
+	open_connection()
+
+func connection_rdy():
+	echo_status(\"peer connected\")
+	get_tree().change_scene_to(Global.main_scene)
+
+func connection_done(id):
+	echo_status(\"peer disconnected\")
+	open_connection()
+
+func open_connection():
+	Global.init_server()
+	echo_status(\"waiting for connection...\")
+	
+func echo_status(msg):
+	get_node(\"Panel/Label\").text = msg
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+"
+
+[node name="gui_server" type="Node2D"]
+script = SubResource( 1 )
+
+[node name="Panel" type="Panel" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[node name="Label" type="Label" parent="Panel"]
+margin_left = 268.873
+margin_top = 186.062
+margin_right = 693.873
+margin_bottom = 355.062
+custom_fonts/font = ExtResource( 1 )
+text = "initializing..."
