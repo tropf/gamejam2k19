@@ -1,8 +1,29 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://ui/gravity_theme.tres" type="Theme" id=1]
 
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+var score_player = 0
+var score_enemy  = 0
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+func add_score_player(d = 1):
+	score_player += d
+	$Control.ScorePlayer.set_text(str(score_player))
+	pass
+	
+func add_score_enemy(d = 1):
+	score_enemy += d
+	$Control.score_enemy.set_text(str(score_enemy))
+	pass"
+
 [node name="Score" type="Node2D"]
+script = SubResource( 1 )
 
 [node name="Control" type="Control" parent="."]
 margin_right = 40.0

@@ -50,22 +50,10 @@ radius = 210.238
 [sub_resource type="GDScript" id=4]
 script/source = "extends Sprite
 
-var rng = RandomNumberGenerator.new()
-
-export var color = Color(0,0,0)
-
 export var rotationspeed = 360
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	get_parent().set_modulate(color)
-	pass 
-	
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-
-	
+func _process(delta):	
 	get_parent().rotation_degrees += rotationspeed*delta
 	pass"
 
@@ -83,5 +71,4 @@ shape = SubResource( 3 )
 [node name="Sprite" type="Sprite" parent="CollisionShape2D"]
 texture = ExtResource( 1 )
 script = SubResource( 4 )
-color = Color( 0.909804, 0.0509804, 0.0509804, 1 )
 [connection signal="body_entered" from="." to="." method="_on_Ball_body_entered"]
