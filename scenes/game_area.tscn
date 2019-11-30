@@ -26,15 +26,20 @@ func ball_update_mode():
 			ball1.set_mode(RigidBody2D.MODE_STATIC)
 			print(\"setting ball1 to static\")
 
-func new_ball1():
+func new_ball1(pos = null, lvel = Vector2(0, 0), avel = 0):
 	if ball1:
 		ball1.queue_free()
 		Global.gravityobjects.erase(ball1)
 	ball1 = preload(\"res://scenes/Ball.tscn\").instance()
-	if ball_responsible:
-		ball1.position = startpos
+	if pos == null:
+		if ball_responsible:
+			ball1.position = startpos
+		else:
+			ball1.position = remote_pos_to_local(startpos)
 	else:
-		ball1.position = remote_pos_to_local(startpos)
+		ball1.position = pos
+	ball1.linear_velocity = lvel
+	ball1.angular_velocity = avel
 	ball_update_mode()
 	if Global.peer == null:
 		ball1.position = startpos
@@ -184,7 +189,7 @@ func _process(delta):
 			Global.send_br_your_turn(ball1.position, ball1.linear_velocity, ball1.angular_velocity)
 			# change resonsibility locally
 			ball_responsible = false
-			ball_update_mode()
+			new_ball1(ball1.position, ball1.linear_velocity, ball1.angular_velocity)
 
 func recv_br_pos(pos, lvel, avel):
 	if !ball_responsible:
@@ -194,11 +199,8 @@ func recv_br_pos(pos, lvel, avel):
 
 func recv_br_your_turn(pos, lvel, avel):
 	# other side tells us we have the ball responsibility
-	ball1.position = remote_pos_to_local(pos)
-	ball1.linear_velocity = remote_vel_to_local(lvel)
-	ball1.angular_velocity = avel
 	ball_responsible = true
-	ball_update_mode()
+	new_ball1(remote_pos_to_local(pos), remote_vel_to_local(lvel), avel)
 
 func is_node_in_viewport(node):
 	if screen_size.x >= node.position.x and screen_size.y >= node.position.y and node.position.x >= 0 and node.position.y >= 0:
