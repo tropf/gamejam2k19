@@ -5,7 +5,6 @@
 [sub_resource type="GDScript" id=3]
 script/source = "extends RigidBody2D
 
-var G = 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,14 +21,14 @@ func _process(delta):
 		#applied_force = (Global.gravity * (mass * i.get_node(\"RigidBody2D\").get_mass()) * delta)
 		if is_other_obj(i):
 			force += calc_force_btw_obj(i)
-	print(\"Force: \", force)
-	set_applied_force(Vector2(100, 10))
+	#print(\"Force: \", force)
+	set_applied_force(force)
 		
 func calc_force_btw_obj(ball):
 	# TODO: add masses
 	var dist = euclidian_distance(ball)
-	print(\"dist \", dist)
-	return -10000000 * get_direction(ball) * G/pow(dist, 2)
+	#print(\"dist \", dist)
+	return -10000000 * get_direction(ball) * Global.gravity/pow(dist, 2)
 	
 func euclidian_distance(ball):
 	return sqrt(pow(self.position.x - ball.position.x, 2) + pow(self.position.y - ball.position.y, 2))
@@ -38,7 +37,7 @@ func get_direction(ball):
 	return (self.position - ball.position).normalized()
 	
 func is_other_obj(ball):
-	return self != ball.get_node(\"RigidBody2D\")
+	return self != ball
 "
 
 [sub_resource type="CircleShape2D" id=4]
@@ -72,9 +71,8 @@ applied_force = Vector2( 100, 0 )
 script = SubResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-scale = Vector2( 0.5, 0.5 )
+scale = Vector2( 0.2, 0.2 )
 shape = SubResource( 4 )
-disabled = true
 
 [node name="Sprite" type="Sprite" parent="CollisionShape2D"]
 texture = ExtResource( 1 )
