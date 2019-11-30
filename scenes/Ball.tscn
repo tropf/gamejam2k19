@@ -41,7 +41,7 @@ func is_other_obj(ball):
 	return self != ball
 
 func _on_Ball_body_entered(body):
-	emit_signal(\"hit\", body)
+	emit_signal(\"hit\", self, body)
 "
 
 [sub_resource type="CircleShape2D" id=3]

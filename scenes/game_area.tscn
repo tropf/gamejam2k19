@@ -1,10 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://scenes/Ball.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/HUD.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/Wall.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/gravity_point.tscn" type="PackedScene" id=3]
 [ext_resource path="res://assets/graphics/wallpaper.png" type="Texture" id=4]
-[ext_resource path="res://ui/Interface.tscn" type="PackedScene" id=5]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
@@ -28,6 +27,8 @@ func new_ball1():
 		ball1.position = remote_pos_to_local(startpos)
 	if Global.peer == null:
 		ball1.position = startpos
+	ball1.set_continuous_collision_detection_mode(2)
+	ball1.connect(\"hit\", self, \"process_hit\")
 	add_child(ball1)
 
 # Called when the node enters the scene tree for the first time.
@@ -192,9 +193,9 @@ func is_node_in_viewport(node):
 		return true
 	return false
 
-func _on_Ball1_hit(body):
-	print(\"hit \", body)
-	if body == $GravityPoint:
+func process_hit(got_hit, hit_by):
+	print(\"hit \", got_hit, hit_by)
+	if got_hit == $GravityPoint and hit_by == ball1:
 		emit_signal(\"game_over\")
 
 func _on_World_game_over():
@@ -204,16 +205,8 @@ func _on_World_game_over():
 [node name="World" type="Node2D"]
 script = SubResource( 1 )
 
-[node name="Ball1" parent="." instance=ExtResource( 1 )]
-position = Vector2( 110.681, 148.334 )
-
-[node name="Ball2" parent="." instance=ExtResource( 1 )]
-visible = false
-position = Vector2( 535.021, 306.081 )
-
-[node name="Ball3" parent="." instance=ExtResource( 1 )]
-visible = false
-position = Vector2( 947.698, 69.8578 )
+[node name="HUD" parent="." instance=ExtResource( 1 )]
+margin_top = 9.0
 
 [node name="WallUp" parent="." instance=ExtResource( 2 )]
 position = Vector2( 512.746, 25.6701 )
@@ -241,7 +234,4 @@ centered = false
 __meta__ = {
 "_edit_lock_": true
 }
-
-[node name="Interface" parent="." instance=ExtResource( 5 )]
 [connection signal="game_over" from="." to="." method="_on_World_game_over"]
-[connection signal="hit" from="Ball1" to="." method="_on_Ball1_hit"]
