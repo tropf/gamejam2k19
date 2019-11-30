@@ -1,0 +1,67 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/fonts/regular.tres" type="DynamicFont" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	Global.peer = NetworkedMultiplayerENet.new()
+	Global.connect(\"connection_established\", self, \"connection_rdy\")
+	Global.connect(\"connection_closed\", self, \"connection_done\")
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+
+func connection_rdy():
+	echo_status(\"connected.\")
+	# initialize scene
+	get_tree().change_scene_to(Global.main_scene)
+		
+func connection_done():
+	echo_status(\"disconnected.\")
+	get_node(\"Panel/LineEdit\").editable = true
+
+func echo_status(msg):
+	get_node(\"Panel/Status\").text = msg
+
+func _on_LineEdit_text_entered(new_text):
+	var re = RegEx.new()
+	re.compile(\"^([0-9]{1,3}[.]){3}[0-9]{1,3}$\")
+	if !re.search(new_text):
+		return
+	
+	get_node(\"Panel/LineEdit\").editable = false
+	echo_status(\"connecting...\")
+	
+	Global.init_client(new_text)
+"
+
+[node name="gui_client" type="Node2D"]
+script = SubResource( 1 )
+
+[node name="Panel" type="Panel" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[node name="LineEdit" type="LineEdit" parent="Panel"]
+margin_left = 220.489
+margin_top = 281.509
+margin_right = 793.489
+margin_bottom = 377.509
+custom_fonts/font = ExtResource( 1 )
+placeholder_text = "IP"
+
+[node name="Status" type="Label" parent="Panel"]
+margin_left = 217.783
+margin_top = 196.35
+margin_right = 799.783
+margin_bottom = 277.35
+custom_fonts/font = ExtResource( 1 )
+[connection signal="text_entered" from="Panel/LineEdit" to="." method="_on_LineEdit_text_entered"]
