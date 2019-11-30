@@ -8,8 +8,9 @@ extents = Vector2( 950, 190 )
 [node name="Wall" type="StaticBody2D"]
 scale = Vector2( 0.1, 0.1 )
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2( 1, 1 )
+shape = SubResource( 1 )
+
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource( 1 )

@@ -41,7 +41,7 @@ func _process(delta):
 	get_parent().rotation_degrees += rotationspeed*delta
 	pass"
 
-[node name="GravityHole" type="RigidBody2D"]
+[node name="GravityPoint" type="RigidBody2D"]
 mode = 1
 script = SubResource( 1 )
 
