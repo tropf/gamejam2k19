@@ -1,4 +1,6 @@
 # Gravity Pong
+von `hanspeterpaul`
+
 ## Konzept
 - zwei Spieler
 - ein Ball
