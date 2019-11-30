@@ -1,0 +1,23 @@
+[gd_scene format=2]
+
+[node name="Score" type="Node2D"]
+
+[node name="ScorePlayer" type="Label" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 16.0
+margin_bottom = 14.0
+text = "55"
+
+[node name="Label" type="Label" parent="."]
+margin_left = -2.0
+margin_right = 2.0
+margin_bottom = 14.0
+text = ":"
+
+[node name="ScoreEnemy" type="Label" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -16.0
+margin_bottom = 14.0
+text = "99"
