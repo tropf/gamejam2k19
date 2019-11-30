@@ -17,6 +17,15 @@ var ball_responsible = true
 var ball1 = null
 var startpos
 
+func ball_update_mode():
+	if ball1:
+		if ball_responsible:
+			ball1.set_mode(RigidBody2D.MODE_RIGID)
+			print(\"setting ball1 to rigid\")
+		else:
+			ball1.set_mode(RigidBody2D.MODE_STATIC)
+			print(\"setting ball1 to static\")
+
 func new_ball1():
 	if ball1:
 		ball1.queue_free()
@@ -26,6 +35,7 @@ func new_ball1():
 		ball1.position = startpos
 	else:
 		ball1.position = remote_pos_to_local(startpos)
+	ball_update_mode()
 	if Global.peer == null:
 		ball1.position = startpos
 	add_child(ball1)
@@ -68,6 +78,7 @@ func _ready():
 			ball_responsible = true
 		else:
 			ball_responsible = false
+		ball_update_mode()
 		
 		start_countdown()
 	else:
@@ -107,14 +118,11 @@ func start_game():
 	else:
 		# testing only
 		ball1.position = startpos
+	ball_update_mode()
 	get_tree().set_pause(false)
 
 func remote_pos_to_local(rpos):
-	var lpos = Vector2()
-	lpos.x = screen_size.x - rpos.x
-	lpos.y = screen_size.y - rpos.y
-	
-	return lpos
+	return screen_size - rpos
 
 func remote_vel_to_local(rvel):
 	return -1 * rvel
@@ -130,9 +138,6 @@ func rgh_mv(id, pos):
 func rgh_rm(id):
 	print(\"rm gravity hole nr: \", id)
 	$RemoteGravityPoint.position = Vector2(-444444444444, 444444444444)
-
-func ball_responsible_by_pos():
-	return ball1.position.x <= screen_size.x / 2
 
 func _input(event):
 	if event is InputEventMouseButton:
@@ -179,7 +184,7 @@ func _process(delta):
 			Global.send_br_your_turn(ball1.position, ball1.linear_velocity, ball1.angular_velocity)
 			# change resonsibility locally
 			ball_responsible = false
-			ball1.set_mode(1)
+			ball_update_mode()
 
 func recv_br_pos(pos, lvel, avel):
 	if !ball_responsible:
@@ -193,7 +198,7 @@ func recv_br_your_turn(pos, lvel, avel):
 	ball1.linear_velocity = remote_vel_to_local(lvel)
 	ball1.angular_velocity = avel
 	ball_responsible = true
-	ball1.set_mode(0)
+	ball_update_mode()
 
 func is_node_in_viewport(node):
 	if screen_size.x >= node.position.x and screen_size.y >= node.position.y and node.position.x >= 0 and node.position.y >= 0:

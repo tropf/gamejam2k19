@@ -87,7 +87,6 @@ func send_rgh_mv(id, pos):
 	rpc_unreliable(\"rgh_mv\", id, pos)
 
 remote func rgh_mv(id, pos):
-	print(\"mv gravity hole to: \", pos)
 	emit_signal(\"rgh_mv\", id, pos)
 	
 func send_rgh_rm(id):
@@ -99,7 +98,7 @@ remote func rgh_rm(id):
 	
 func send_br_your_turn(pos, lvel, avel):
 	print(\"handover of ball responsibility\")
-	rpc(\"br_your_turn\")
+	rpc(\"br_your_turn\", pos, lvel, avel)
 	
 remote func br_your_turn(pos, lvel, avel):
 	print(\"received ball responsibility handover\")
