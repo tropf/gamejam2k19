@@ -12,24 +12,19 @@ script/source = "extends Node2D
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Global.peer = NetworkedMultiplayerENet.new()
-	get_tree().connect(\"connected_to_server\", self, \"_connected_ok\")
-	get_tree().connect(\"connection_failed\", self, \"_connected_fail\")
-	get_tree().connect(\"server_disconnected\", self, \"_server_disconnected\")
+	Global.connect(\"connection_established\", self, \"connection_rdy\")
+	Global.connect(\"connection_closed\", self, \"connection_done\")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
 
-func _connected_ok():
+func connection_rdy():
 	echo_status(\"connected.\")
 	# initialize scene
-	pass
-	
-func _connected_fail():
-	echo_status(\"failed\")
-	get_node(\"Panel/LineEdit\").editable = true
-	
-func _server_disconnected():
+	get_tree().change_scene_to(Global.main_scene)
+		
+func connection_done():
 	echo_status(\"disconnected.\")
 	get_node(\"Panel/LineEdit\").editable = true
 
@@ -45,9 +40,7 @@ func _on_LineEdit_text_entered(new_text):
 	get_node(\"Panel/LineEdit\").editable = false
 	echo_status(\"connecting...\")
 	
-	Global.peer = NetworkedMultiplayerENet.new()
-	Global.peer.create_client(new_text, 12395)
-	get_tree().set_network_peer(Global.peer)
+	Global.init_client(new_text)
 "
 
 [node name="gui_client" type="Node2D"]

@@ -11,21 +11,20 @@ script/source = "extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	get_tree().connect(\"network_peer_connected\", self, \"_player_connected\")
-	get_tree().connect(\"network_peer_disconnected\", self, \"_player_disconnected\")
+	Global.connect(\"connection_established\", self, \"connection_rdy\")
+	Global.connect(\"connection_closed\", self, \"connection_done\")
 	open_connection()
 
-func _player_connected(id):
+func connection_rdy():
 	echo_status(\"peer connected\")
+	get_tree().change_scene_to(Global.main_scene)
 
-func _player_disconnected(id):
+func connection_done(id):
 	echo_status(\"peer disconnected\")
 	open_connection()
 
 func open_connection():
-	Global.peer = NetworkedMultiplayerENet.new()
-	Global.peer.create_server(12395, 1)
-	get_tree().set_network_peer(Global.peer)
+	Global.init_server()
 	echo_status(\"waiting for connection...\")
 	
 func echo_status(msg):
