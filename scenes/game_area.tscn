@@ -11,7 +11,6 @@ signal game_over
 
 var screen_size = null
 var clicked = false
-var gh_active = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,9 +22,18 @@ func _ready():
 	
 	screen_size = get_viewport_rect().size
 
+	$RemoteGravityPoint/CollisionShape2D.set_modulate(Color(0, 80, 0, 50))
+	$RemoteGravityPoint.position = Vector2(-3333333333, 33333333333333)
+
 	# paused by default
 	get_tree().set_pause(true)
 
+	Global.connect(\"recv_indicate_rdy\", self, \"recv_indicate_rdy\")
+	Global.connect(\"recv_indicate_start\", self, \"recv_indicate_start\")
+	Global.connect(\"rgh_mv\", self, \"rgh_mv\")
+	Global.connect(\"rgh_spawn\", self, \"rgh_spawn\")
+	Global.connect(\"rgh_rm\", self, \"rgh_rm\")
+	
 	# in case network connection: synchronized start procedure
 	if Global.peer:
 		print(\"real mode\")
@@ -35,9 +43,6 @@ func _ready():
 	else:
 		print(\"testing mode\")
 		start_game()
-
-	Global.connect(\"recv_indicate_rdy\", self, \"recv_indicate_rdy\")
-	Global.connect(\"recv_indicate_start\", self, \"recv_indicate_start\")
 
 func start_countdown():
 	# situation: i am client, i indicate to server that i am rdy
@@ -66,36 +71,40 @@ func recv_indicate_start():
 func start_game():
 	get_tree().set_pause(false)
 
+func remote_pos_to_local(rpos):
+	var lpos = Vector2()
+	lpos.x = screen_size.x - rpos.x
+	lpos.y = screen_size.y - rpos.y
+	
+	return lpos
+
 # rgh: remote gravity hole
 func rgh_spawn(id, pos):
 	print(\"create gravity hole at: \", pos)
+	$RemoteGravityPoint.position = remote_pos_to_local(pos)
 
 func rgh_mv(id, pos):
 	print(\"mv gravity hole to: \", pos)
+	$RemoteGravityPoint.position = remote_pos_to_local(pos)
 
 func rgh_rm(id):
 	print(\"rm gravity hole nr: \", id)
+	$RemoteGravityPoint.position = Vector2(-444444444444, 444444444444)
 
 func _input(event):
 	if event is InputEventMouseButton:
-		if event.pressed:
+		#$GravityHole.position = event.position
+		clicked = event.pressed
+		move_gravity_hole(event.position)
+		if clicked:
 			Global.send_rgh_spawn(1, event.position)
-			gh_active = true
 		else:
 			Global.send_rgh_rm(1)
-			gh_active = false
 	elif event is InputEventMouseMotion:
-		if gh_active:
+		if clicked:
+			move_gravity_hole(event.position)
 			Global.send_rgh_mv(1, event.position)
-
-	if event is InputEventMouseButton:
-		#$GravityHole.position = event.position
-		clicked = not clicked
-		move_gravity_hole(event.position)
-	elif event is InputEventMouseMotion:
-		move_gravity_hole(event.position)
-		#print(\"Mouse Motion at: \", event.position)
-
+		
    	# Print the size of the viewport
 	#print(\"Viewport Resolution is: \", get_viewport_rect().size)
 	pass # Replace with function body.
@@ -104,7 +113,7 @@ func move_gravity_hole(position):
 	if clicked:
 		$GravityPoint.position = position
 	else:
-		$GravityPoint.position = Vector2(100000000000, 100000000000)
+		$GravityPoint.position = Vector2(-100000000000, -100000000000)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
@@ -142,6 +151,11 @@ scale = Vector2( 0.2, 0.2 )
 
 [node name="GravityPoint" parent="." instance=ExtResource( 3 )]
 position = Vector2( 419.216, 93.5302 )
+mass = 100.0
+gravity_scale = 128.0
+
+[node name="RemoteGravityPoint" parent="." instance=ExtResource( 3 )]
+position = Vector2( 261.471, 339.698 )
 mass = 100.0
 gravity_scale = 128.0
 [connection signal="game_over" from="." to="." method="_on_World_game_over"]
