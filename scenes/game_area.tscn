@@ -11,6 +11,7 @@ signal game_over
 
 var screen_size = null
 var clicked = false
+var ball_responsible = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -27,18 +28,26 @@ func _ready():
 
 	# paused by default
 	get_tree().set_pause(true)
+	$Ball1.position = Vector2(-22222222222, -2222222222222)
 
 	Global.connect(\"recv_indicate_rdy\", self, \"recv_indicate_rdy\")
 	Global.connect(\"recv_indicate_start\", self, \"recv_indicate_start\")
 	Global.connect(\"rgh_mv\", self, \"rgh_mv\")
 	Global.connect(\"rgh_spawn\", self, \"rgh_spawn\")
 	Global.connect(\"rgh_rm\", self, \"rgh_rm\")
+	Global.connect(\"br_your_turn\", self, \"recv_br_your_turn\")
+	Global.connect(\"br_pos\", self, \"recv_br_pos\")
 	
 	# in case network connection: synchronized start procedure
 	if Global.peer:
 		print(\"real mode\")
 		get_tree().set_network_peer(Global.peer)
-		#start_game()
+		
+		if Global.is_server():
+			ball_responsible = true
+		else:
+			ball_responsible = false
+		
 		start_countdown()
 	else:
 		print(\"testing mode\")
@@ -69,6 +78,15 @@ func recv_indicate_start():
 	start_game()
 
 func start_game():
+	var startpos = Vector2(screen_size.x / 4, screen_size.y / 2)
+	if Global.peer:
+		if Global.is_server():
+			$Ball1.position = startpos
+		else:
+			$Ball1.position = remote_pos_to_local(startpos)
+	else:
+		# testing only
+		$Ball1.position = startpos
 	get_tree().set_pause(false)
 
 func remote_pos_to_local(rpos):
@@ -78,18 +96,23 @@ func remote_pos_to_local(rpos):
 	
 	return lpos
 
+func remote_vel_to_local(rvel):
+	return -1 * rvel
+
 # rgh: remote gravity hole
 func rgh_spawn(id, pos):
 	print(\"create gravity hole at: \", pos)
 	$RemoteGravityPoint.position = remote_pos_to_local(pos)
 
 func rgh_mv(id, pos):
-	print(\"mv gravity hole to: \", pos)
 	$RemoteGravityPoint.position = remote_pos_to_local(pos)
 
 func rgh_rm(id):
 	print(\"rm gravity hole nr: \", id)
 	$RemoteGravityPoint.position = Vector2(-444444444444, 444444444444)
+
+func ball_responsible_by_pos():
+	return $Ball1.position.x <= screen_size.x / 2
 
 func _input(event):
 	if event is InputEventMouseButton:
@@ -118,6 +141,30 @@ func move_gravity_hole(position):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+
+func _process(delta):
+	if ball_responsible:
+		# transmit position
+		Global.send_br_pos($Ball1.position, $Ball1.linear_velocity, $Ball1.angular_velocity)
+		# check if still reponsible
+		# if no -> handover
+		var handover_margin = 0.1
+		if screen_size.x * (0.5 + handover_margin) < $Ball1.position.x:
+			print(\"current x: \", $Ball1.position.x, \"; handover margin: \", screen_size.x * (0.5 + handover_margin))
+			# send handover
+			Global.send_br_your_turn()
+			# change resonsibility locally
+			ball_responsible = false
+
+func recv_br_pos(pos, lvel, avel):
+	if !ball_responsible:
+		$Ball1.position = remote_pos_to_local(pos)
+		$Ball1.linear_velocity = remote_vel_to_local(lvel)
+		$Ball1.angular_velocity = -1 * avel
+
+func recv_br_your_turn():
+	# other side tells us we have the ball responsibility
+	ball_responsible = true
 
 func _on_Ball1_hit(body):
 	print(\"hit \", body)

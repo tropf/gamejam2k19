@@ -19,6 +19,8 @@ signal recv_indicate_start
 signal rgh_spawn
 signal rgh_mv
 signal rgh_rm
+signal br_your_turn
+signal br_pos
 
 func _ready():
 	get_tree().connect(\"network_peer_connected\", self, \"_player_connected\")
@@ -93,7 +95,21 @@ func send_rgh_rm(id):
 	
 remote func rgh_rm(id):
 	print(\"rm gravity hole nr: \", id)
-	emit_signal(\"rgh_rm\", id)"
+	emit_signal(\"rgh_rm\", id)
+	
+func send_br_your_turn():
+	print(\"handover of ball responsibility\")
+	rpc(\"br_your_turn\")
+	
+remote func br_your_turn():
+	print(\"received ball responsibility handover\")
+	emit_signal(\"br_your_turn\")
+	
+func send_br_pos(pos, lvel, avel):
+	rpc_unreliable(\"br_pos\", pos, lvel, avel)
+	
+remote func br_pos(pos, lvel, avel):
+	emit_signal(\"br_pos\", pos, lvel, avel)"
 
 [node name="Global" type="Node2D"]
 script = SubResource( 1 )
