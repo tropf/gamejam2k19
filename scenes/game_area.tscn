@@ -9,14 +9,18 @@ script/source = "extends Node2D
 
 signal game_over
 
+var screen_size = null
 var clicked = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# remove ball2/3
 	Global.gravityobjects.erase($Ball2)
 	Global.gravityobjects.erase($Ball3)
 	remove_child($Ball2)
 	remove_child($Ball3)
+	
+	screen_size = get_viewport_rect().size
 
 func _input(event):
 	if event is InputEventMouseButton:
@@ -63,23 +67,13 @@ position = Vector2( 535.021, 306.081 )
 [node name="Ball3" parent="." instance=ExtResource( 1 )]
 position = Vector2( 947.698, 69.8578 )
 
-[node name="Wall" parent="." instance=ExtResource( 2 )]
-position = Vector2( 497.714, -11.6913 )
-scale = Vector2( 1, 0.1 )
+[node name="WallUp" parent="." instance=ExtResource( 2 )]
+position = Vector2( 512.746, 1.67015 )
+scale = Vector2( 0.2, 0.2 )
 
-[node name="Wall2" parent="." instance=ExtResource( 2 )]
-position = Vector2( 481.013, 616.297 )
-scale = Vector2( 1, 0.1 )
-
-[node name="Wall3" parent="." instance=ExtResource( 2 )]
-position = Vector2( -15.0316, 151.987 )
-rotation = 1.5708
-scale = Vector2( 1, 0.1 )
-
-[node name="Wall4" parent="." instance=ExtResource( 2 )]
-position = Vector2( 1030.5, 207.103 )
-rotation = 1.5708
-scale = Vector2( 1, 0.1 )
+[node name="WallDown" parent="." instance=ExtResource( 2 )]
+position = Vector2( 511.075, 601.266 )
+scale = Vector2( 0.2, 0.2 )
 
 [node name="GravityPoint" parent="." instance=ExtResource( 3 )]
 position = Vector2( 419.216, 93.5302 )

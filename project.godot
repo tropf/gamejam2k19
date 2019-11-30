@@ -16,17 +16,12 @@ _global_script_class_icons={
 [application]
 
 config/name="Neues Spiel"
-run/main_scene="res://scenes/testscene.tscn"
+run/main_scene="res://scenes/game_area.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
 Global="*res://scenes/Global.tscn"
-
-[display]
-
-window/size/width=1920
-window/size/height=1080
 
 [physics]
 
