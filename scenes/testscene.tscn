@@ -23,5 +23,10 @@ func _ready():
 script = SubResource( 1 )
 
 [node name="Ball1" parent="." instance=ExtResource( 1 )]
+position = Vector2( 289.391, 270.257 )
 
 [node name="Ball2" parent="." instance=ExtResource( 1 )]
+position = Vector2( 638.572, 184.157 )
+
+[node name="Ball3" parent="." instance=ExtResource( 1 )]
+position = Vector2( 899.262, 480.723 )
