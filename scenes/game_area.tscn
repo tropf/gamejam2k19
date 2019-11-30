@@ -9,23 +9,37 @@ script/source = "extends Node2D
 
 signal game_over
 
-var screen_size = null
+var viewport_size = null
 var clicked = false
 var gh_active = false
+var ball1 = null
+
+
+func new_ball1():
+	if ball1:
+		ball1.queue_free()
+		Global.gravityobjects.erase(ball1)
+	ball1 = preload(\"res://scenes/Ball.tscn\").instance()
+	ball1.position = viewport_size * 0.5
+	add_child(ball1)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# remove ball2/3
+	Global.gravityobjects.erase($Ball1)
 	Global.gravityobjects.erase($Ball2)
 	Global.gravityobjects.erase($Ball3)
+	remove_child($Ball1)
 	remove_child($Ball2)
 	remove_child($Ball3)
 	
-	screen_size = get_viewport_rect().size
-
 	# paused by default
 	get_tree().set_pause(true)
-
+	
+	viewport_size = get_viewport_rect().size
+		
+	new_ball1()
+	
 	# in case network connection: synchronized start procedure
 	if Global.peer:
 		print(\"real mode\")
@@ -107,14 +121,27 @@ func move_gravity_hole(position):
 		$GravityPoint.position = Vector2(100000000000, 100000000000)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _process(delta):
+	if ball1:
+		if not is_node_in_viewport(ball1):
+			print(\"Ball1 outside of viewport! pos: \", ball1.position)
+			#ball1.position = viewport_size * 0.5
+			#ball1.linear_velocity = Vector2(0, 0)
+			#ball1.angular_velocity = 0
+			new_ball1()
+			#if once:
+			#ball1.apply_pos(viewport_size/2)
+	pass
+
+func is_node_in_viewport(node):
+	if viewport_size.x >= node.position.x and viewport_size.y >= node.position.y and node.position.x >= 0 and node.position.y >= 0:
+		return true
+	return false
 
 func _on_Ball1_hit(body):
 	print(\"hit \", body)
 	if body == $GravityPoint:
 		emit_signal(\"game_over\")
-	
 
 func _on_World_game_over():
 	print(\"Game over!\")
