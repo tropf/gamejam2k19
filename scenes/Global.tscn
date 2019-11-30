@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+# http://docs.godotengine.org/en/latest/getting_started/step_by_step/singletons_autoload.html
+
+# list of gameobjects, which will interact with gravity
+# add on spawn, delete when objects are destroyed !
+var gravityobjects=[]
+export var gravity = 1
+"
+
+[node name="Global" type="Node2D"]
+script = SubResource( 1 )
