@@ -9,7 +9,7 @@ script/source = "extends Node2D
 # add on spawn, delete when objects are destroyed !
 var gravityobjects=[]
 export var gravity = 1
-"
+var peer"
 
 [node name="Global" type="Node2D"]
 script = SubResource( 1 )

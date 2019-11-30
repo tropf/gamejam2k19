@@ -1,0 +1,53 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/fonts/regular.tres" type="DynamicFont" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	get_tree().connect(\"network_peer_connected\", self, \"_player_connected\")
+	get_tree().connect(\"network_peer_disconnected\", self, \"_player_disconnected\")
+	open_connection()
+
+func _player_connected(id):
+	echo_status(\"peer connected\")
+
+func _player_disconnected(id):
+	echo_status(\"peer disconnected\")
+	open_connection()
+
+func open_connection():
+	Global.peer = NetworkedMultiplayerENet.new()
+	Global.peer.create_server(12395, 1)
+	get_tree().set_network_peer(Global.peer)
+	echo_status(\"waiting for connection...\")
+	
+func echo_status(msg):
+	get_node(\"Panel/Label\").text = msg
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+"
+
+[node name="gui_server" type="Node2D"]
+script = SubResource( 1 )
+
+[node name="Panel" type="Panel" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[node name="Label" type="Label" parent="Panel"]
+margin_left = 268.873
+margin_top = 186.062
+margin_right = 693.873
+margin_bottom = 355.062
+custom_fonts/font = ExtResource( 1 )
+text = "initializing..."
