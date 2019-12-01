@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://assets/ui/gravity_theme.tres" type="Theme" id=1]
 [ext_resource path="res://scenes/HUD.gd" type="Script" id=2]
+[ext_resource path="res://icon.png" type="Texture" id=3]
 
 [node name="HUD" type="Control"]
+margin_top = -1.16635
 margin_right = 1024.0
-margin_bottom = 600.0
+margin_bottom = 598.834
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
 
@@ -37,3 +39,30 @@ rect_pivot_offset = Vector2( 490, 76.5 )
 text = "0
 "
 align = 2
+
+[node name="GridContainer" type="GridContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 965.0
+margin_top = 550.0
+margin_right = 5.00012
+margin_bottom = 14.0
+rect_scale = Vector2( 0.6, 0.6 )
+columns = 5
+
+[node name="TextureRect" type="TextureRect" parent="GridContainer"]
+margin_right = 64.0
+margin_bottom = 64.0
+texture = ExtResource( 3 )
+
+[node name="Label" type="Label" parent="GridContainer/TextureRect"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -51.0068
+margin_top = -90.5962
+margin_right = 69.9932
+margin_bottom = -15.5962
+rect_scale = Vector2( 0.3, 0.3 )
+text = "9/9"
