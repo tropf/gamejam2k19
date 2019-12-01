@@ -16,8 +16,21 @@ func _input(event):
 			$MarginContainer.hide()
 			add_child(new_scene.instance())
 
+
 func _on_TextureRect_mouse_entered():
 	selected_level = 1
 
 func _on_TextureRect2_mouse_entered():
 	selected_level = 2
+
+func _on_TextureRect3_mouse_entered():
+	selected_level = 3
+
+func _on_TextureRect4_mouse_entered():
+	selected_level = 4
+
+func _on_TextureRect5_mouse_entered():
+	selected_level = 5
+
+func _on_TextureRect6_mouse_entered():
+	selected_level = 6
