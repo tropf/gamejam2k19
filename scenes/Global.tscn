@@ -32,13 +32,20 @@ func _ready():
 	get_tree().connect(\"connection_failed\", self, \"_connected_fail\")
 	get_tree().connect(\"server_disconnected\", self, \"_server_disconnected\")
 	
+	
+func get_enet():
+	if peer:
+		peer.close_connection()
+		peer = null
+	return NetworkedMultiplayerENet.new()
+	
 func init_client(server_ip):
-	peer = NetworkedMultiplayerENet.new()
+	peer = get_enet()
 	peer.create_client(server_ip, 12395)
 	get_tree().set_network_peer(peer)
 
 func init_server():
-	peer = NetworkedMultiplayerENet.new()
+	peer = get_enet()
 	peer.create_server(12395, 1)
 	get_tree().set_network_peer(peer)
 
