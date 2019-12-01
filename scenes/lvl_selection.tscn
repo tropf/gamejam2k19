@@ -1,9 +1,12 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scenes/lvl_selection.gd" type="Script" id=1]
 [ext_resource path="res://assets/fonts/regular.tres" type="DynamicFont" id=2]
 [ext_resource path="res://assets/ui/screenshot_lvl1.png" type="Texture" id=3]
 [ext_resource path="res://assets/ui/screenshot_lvl2.png" type="Texture" id=4]
+[ext_resource path="res://assets/ui/screenshot_lvl3.png" type="Texture" id=5]
+[ext_resource path="res://assets/ui/screenshot_lvl4.png" type="Texture" id=6]
+[ext_resource path="res://assets/ui/screenshot_lvl5.png" type="Texture" id=7]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 1 )
@@ -25,13 +28,13 @@ custom_constants/margin_bottom = 50
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 margin_left = 50.0
 margin_top = 50.0
-margin_right = 970.0
+margin_right = 974.0
 margin_bottom = 568.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
-margin_right = 920.0
+margin_right = 924.0
 margin_bottom = 75.0
 custom_fonts/font = ExtResource( 2 )
 text = "Select level"
@@ -39,29 +42,28 @@ align = 1
 
 [node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
 margin_top = 79.0
-margin_right = 920.0
+margin_right = 924.0
 margin_bottom = 154.0
 custom_fonts/font = ExtResource( 2 )
 align = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 margin_top = 158.0
-margin_right = 920.0
+margin_right = 924.0
 margin_bottom = 518.0
 size_flags_horizontal = 15
 size_flags_vertical = 15
 alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-margin_right = 920.0
+margin_right = 924.0
 margin_bottom = 360.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
-editor/display_folded = true
-margin_right = 920.0
+margin_right = 924.0
 margin_bottom = 176.0
 
-[node name="Container2" type="Container" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Container4" type="Container" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 size_flags_horizontal = 3
 size_flags_vertical = 0
 
@@ -74,7 +76,7 @@ size_flags_vertical = 0
 texture = ExtResource( 3 )
 stretch_mode = 6
 
-[node name="Container4" type="Container" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Container5" type="Container" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 margin_left = 308.0
 margin_right = 308.0
 size_flags_horizontal = 3
@@ -101,65 +103,61 @@ margin_right = 920.0
 margin_bottom = 176.0
 mouse_default_cursor_shape = 2
 size_flags_vertical = 0
-texture = ExtResource( 4 )
+texture = ExtResource( 5 )
 stretch_mode = 6
+
+[node name="Container6" type="Container" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 924.0
+margin_right = 924.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
 
 [node name="Container" type="Container" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 margin_top = 180.0
-margin_right = 920.0
+margin_right = 924.0
 margin_bottom = 180.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
-editor/display_folded = true
 margin_top = 184.0
-margin_right = 920.0
+margin_right = 924.0
 margin_bottom = 360.0
 
 [node name="Container2" type="Container" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+margin_right = 102.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 
 [node name="TextureRect4" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
-margin_left = 4.0
-margin_right = 304.0
+margin_left = 106.0
+margin_right = 406.0
 margin_bottom = 176.0
 mouse_default_cursor_shape = 2
 size_flags_vertical = 0
-texture = ExtResource( 3 )
+texture = ExtResource( 6 )
 stretch_mode = 6
 
 [node name="Container" type="Container" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
-margin_left = 308.0
-margin_right = 308.0
+margin_left = 410.0
+margin_right = 512.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 
 [node name="TextureRect5" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
-margin_left = 312.0
-margin_right = 612.0
+margin_left = 516.0
+margin_right = 816.0
 margin_bottom = 176.0
 mouse_default_cursor_shape = 2
 size_flags_vertical = 0
-texture = ExtResource( 4 )
+texture = ExtResource( 7 )
 stretch_mode = 6
 
 [node name="Container3" type="Container" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
-margin_left = 616.0
-margin_right = 616.0
+margin_left = 820.0
+margin_right = 924.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
-
-[node name="TextureRect6" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
-margin_left = 620.0
-margin_right = 920.0
-margin_bottom = 176.0
-mouse_default_cursor_shape = 2
-size_flags_vertical = 0
-texture = ExtResource( 4 )
-stretch_mode = 6
 [connection signal="mouse_entered" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/TextureRect" to="." method="_on_TextureRect_mouse_entered"]
 [connection signal="mouse_entered" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/TextureRect2" to="." method="_on_TextureRect2_mouse_entered"]
 [connection signal="mouse_entered" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer/TextureRect3" to="." method="_on_TextureRect3_mouse_entered"]
 [connection signal="mouse_entered" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/TextureRect4" to="." method="_on_TextureRect4_mouse_entered"]
 [connection signal="mouse_entered" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/TextureRect5" to="." method="_on_TextureRect5_mouse_entered"]
-[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/TextureRect6" to="." method="_on_TextureRect6_mouse_entered"]
