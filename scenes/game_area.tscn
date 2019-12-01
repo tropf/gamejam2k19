@@ -33,22 +33,22 @@ func ball_update_mode():
 
 func maybe_spawn_powerup():
 	if !powerup:
-		if Global.rng.randf_range(0, 1) < 0.2:
+		if Global.rng.randf_range(0, 1) < 100*0.2:
 			spawn_powerup()
 
 func spawn_powerup():
 	var pos = Vector2(screen_size.x * 7/8, screen_size.y * 0.5 + Global.rng.randf_range(-0.4 * screen_size.y, +0.4 * screen_size.y))
 	powerup = preload(\"res://scenes/powerup_stop.tscn\").instance()
 	powerup.position = pos
-	powerup.connect(\"body_touched\", self, \"hit_powerup\")
+	powerup.set_ball(ball1)
+	powerup.connect(\"ball_touched\", self, \"hit_powerup\")
 	add_child(powerup)
 	
-func hit_powerup(hit_by):
-	if hit_by == ball1:
-		powerup.queue_free()
-		powerup = null
-		ammo_stop_power += 1
-		$HUD.set_powerup_stop_count(ammo_stop_power)
+func hit_powerup():
+	powerup.queue_free()
+	powerup = null
+	ammo_stop_power += 1
+	$HUD.set_powerup_stop_count(ammo_stop_power)
 		
 
 func new_ball1(pos = null, lvel = Vector2(0, 0), avel = 0):
@@ -71,6 +71,10 @@ func new_ball1(pos = null, lvel = Vector2(0, 0), avel = 0):
 	if Global.peer == null and pos == null:
 		ball1.position = startpos
 	ball1.set_continuous_collision_detection_mode(2)
+	
+	if powerup != null:
+		powerup.set_ball(ball1)
+	
 	add_child(ball1)
 
 func max_score_reached():

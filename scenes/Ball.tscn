@@ -42,6 +42,7 @@ func is_other_obj(ball):
 
 func _on_Ball_body_entered(body):
 	emit_signal(\"hit\", body)
+	print(\"the ball hit\", body)
 "
 
 [sub_resource type="CircleShape2D" id=3]
