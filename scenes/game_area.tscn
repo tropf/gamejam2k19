@@ -17,6 +17,7 @@ var clicked = false
 var ball_responsible = true
 var ball1 = null
 var startpos
+var allowed_x = 0.45
 
 func ball_update_mode():
 	if ball1:
@@ -108,8 +109,9 @@ func countdown_done():
 		clicked = false
 	if clicked:
 		var p = get_viewport().get_mouse_position()
-		$GravityPoint.position = p
-		Global.send_rgh_spawn(1, p)
+		if p.x <= screen_size.x * allowed_x:
+			$GravityPoint.position = p
+			Global.send_rgh_spawn(1, p)
 	if !$background_music.playing:
 		$background_music.playing = true
 		$Countdown.sound = false
@@ -195,6 +197,15 @@ func _input(event):
 		if clicked:
 			move_gravity_hole(event.position)
 			Global.send_rgh_mv(1, event.position)
+	if event is InputEventMouse:
+		if clicked:
+			if event.position.x > screen_size.x * allowed_x:
+				$area_forbidden_marker.show()
+			else:
+				$area_forbidden_marker.hide()
+		else:
+			$area_forbidden_marker.hide()
+		
 		
    	# Print the size of the viewport
 	#print(\"Viewport Resolution is: \", get_viewport_rect().size)
@@ -202,7 +213,11 @@ func _input(event):
 
 func move_gravity_hole(position):
 	if clicked:
-		$GravityPoint.position = position
+		if screen_size.x * allowed_x >= position.x:
+			$GravityPoint.position = position
+		else:
+			# hide gravity point for now
+			$GravityPoint.position = Vector2(-100000000000, -100000000000)
 	else:
 		$GravityPoint.position = Vector2(-100000000000, -100000000000)
 
@@ -275,6 +290,13 @@ func recv_enemy_lost():
 [node name="World" type="Node2D"]
 script = SubResource( 1 )
 
+[node name="area_forbidden_marker" type="Panel" parent="."]
+visible = false
+margin_left = 460.0
+margin_top = 42.0
+margin_right = 1024.0
+margin_bottom = 558.0
+
 [node name="HUD" parent="." instance=ExtResource( 1 )]
 margin_top = 9.0
 
@@ -310,4 +332,5 @@ __meta__ = {
 [node name="background_music" type="AudioStreamPlayer" parent="."]
 pause_mode = 2
 stream = ExtResource( 6 )
+volume_db = -10.0
 [connection signal="game_over" from="." to="." method="_on_World_game_over"]

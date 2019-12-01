@@ -34,6 +34,7 @@ func update_status():
 		$Timer.start()
 	else:
 		if sound:
-			$beep_high.play()
+			#$beep_high.play()
+			pass
 		$Timer.stop()
 		emit_signal("done")
