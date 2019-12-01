@@ -1,16 +1,39 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://assets/ui/gravity_theme.tres" type="Theme" id=1]
+[ext_resource path="res://scenes/HUD.gd" type="Script" id=2]
 
 [node name="HUD" type="Control"]
 margin_right = 1024.0
 margin_bottom = 600.0
 theme = ExtResource( 1 )
+script = ExtResource( 2 )
 
-[node name="Label" type="Label" parent="."]
+[node name="colon" type="Label" parent="."]
 anchor_right = 1.0
 margin_top = 50.0
 margin_bottom = 203.0
-text = "00:00
-"
+rect_pivot_offset = Vector2( 490, 76.5 )
+text = ":"
 align = 1
+
+[node name="score_player" type="Label" parent="."]
+anchor_right = 1.0
+margin_left = 412.0
+margin_top = 54.0
+margin_right = -502.0
+margin_bottom = 207.0
+rect_pivot_offset = Vector2( 490, 76.5 )
+text = "0
+"
+
+[node name="score_enemy" type="Label" parent="."]
+anchor_right = 1.0
+margin_left = 490.0
+margin_top = 54.0
+margin_right = -410.0
+margin_bottom = 207.0
+rect_pivot_offset = Vector2( 490, 76.5 )
+text = "0
+"
+align = 2

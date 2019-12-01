@@ -21,6 +21,7 @@ signal rgh_mv
 signal rgh_rm
 signal br_your_turn
 signal br_pos
+signal i_lost
 
 func _ready():
 	get_tree().connect(\"network_peer_connected\", self, \"_player_connected\")
@@ -108,7 +109,13 @@ func send_br_pos(pos, lvel, avel):
 	rpc_unreliable(\"br_pos\", pos, lvel, avel)
 	
 remote func br_pos(pos, lvel, avel):
-	emit_signal(\"br_pos\", pos, lvel, avel)"
+	emit_signal(\"br_pos\", pos, lvel, avel)
+	
+func send_i_lost():
+	rpc(\"i_lost\")
+
+remote func i_lost():
+	emit_signal(\"i_lost\")"
 
 [node name="Global" type="Node2D"]
 script = SubResource( 1 )
