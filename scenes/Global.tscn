@@ -13,6 +13,7 @@ var peer
 var main_scene = preload(\"res://scenes/game_area.tscn\")
 var menu_scene = preload(\"res://scenes/Main_menu.tscn\")
 var won = false
+var rng
 
 signal connection_established
 signal connection_closed
@@ -31,7 +32,8 @@ func _ready():
 	get_tree().connect(\"network_peer_disconnected\", self, \"_player_disconnected\")
 	get_tree().connect(\"connection_failed\", self, \"_connected_fail\")
 	get_tree().connect(\"server_disconnected\", self, \"_server_disconnected\")
-	
+	rng = RandomNumberGenerator.new()
+	rng.randomize()
 	
 func get_enet():
 	if peer:

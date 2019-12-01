@@ -20,6 +20,7 @@ var ball1 = null
 var startpos
 var allowed_x = 0.45
 var ammo_stop_power = 3
+var powerup = null
 
 func ball_update_mode():
 	if ball1:
@@ -29,6 +30,26 @@ func ball_update_mode():
 		else:
 			ball1.set_mode(RigidBody2D.MODE_STATIC)
 			print(\"setting ball1 to static\")
+
+func maybe_spawn_powerup():
+	if !powerup:
+		if Global.rng.randf_range(0, 1) < 0.2:
+			spawn_powerup()
+
+func spawn_powerup():
+	var pos = Vector2(screen_size.x * 7/8, screen_size.y * 0.5 + Global.rng.randf_range(-0.4 * screen_size.y, +0.4 * screen_size.y))
+	powerup = preload(\"res://scenes/powerup_stop.tscn\").instance()
+	powerup.position = pos
+	powerup.connect(\"body_touched\", self, \"hit_powerup\")
+	add_child(powerup)
+	
+func hit_powerup(hit_by):
+	if hit_by == ball1:
+		powerup.queue_free()
+		powerup = null
+		ammo_stop_power += 1
+		$HUD.set_powerup_stop_count(ammo_stop_power)
+		
 
 func new_ball1(pos = null, lvel = Vector2(0, 0), avel = 0):
 	if ball1:
@@ -66,6 +87,7 @@ func _ready():
 	remove_child($Ball2)
 	remove_child($Ball3)
 	
+	$HUD.set_powerup_stop_count(ammo_stop_power)
 	screen_size = get_viewport_rect().size
 	startpos = Vector2(screen_size.x / 8, screen_size.y / 2)
 	new_ball1()
@@ -227,6 +249,8 @@ func recv_use_power_stop():
 func use_power_stop():
 	if ammo_stop_power > 0:
 		ammo_stop_power -= 1
+		$HUD.set_powerup_stop_count(ammo_stop_power)
+		
 		if ball_responsible:
 			new_ball1(ball1.position)
 		else:
@@ -300,6 +324,7 @@ func lose():
 	# respawn ball
 	# award enemy a point
 	new_ball1()
+	maybe_spawn_powerup()
 	$HUD.change_score(0,1)
 	Global.send_i_lost()
 	do_countdown()
