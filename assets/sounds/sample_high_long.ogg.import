@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/sample_high_long.ogg-1f2cf6c8ea8659fccbc151aaf9accfeb.oggstr"
+
+[deps]
+
+source_file="res://assets/sounds/sample_high_long.ogg"
+dest_files=[ "res://.import/sample_high_long.ogg-1f2cf6c8ea8659fccbc151aaf9accfeb.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

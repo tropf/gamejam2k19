@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://assets/ui/gravity_theme.tres" type="Theme" id=1]
 [ext_resource path="res://scenes/countdown.gd" type="Script" id=2]
+[ext_resource path="res://assets/sounds/sample_low_short.ogg" type="AudioStream" id=3]
+[ext_resource path="res://assets/sounds/sample_high_long.ogg" type="AudioStream" id=4]
 
 [node name="Countdown" type="Control"]
 theme = ExtResource( 1 )
@@ -17,4 +19,12 @@ align = 1
 [node name="Timer" type="Timer" parent="."]
 pause_mode = 2
 wait_time = 0.5
+
+[node name="beep_low" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+stream = ExtResource( 3 )
+
+[node name="beep_high" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+stream = ExtResource( 4 )
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

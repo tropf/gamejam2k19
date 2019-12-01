@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/sample_low_short.ogg-69a5282da27aef9048d858e131081e79.oggstr"
+
+[deps]
+
+source_file="res://assets/sounds/sample_low_short.ogg"
+dest_files=[ "res://.import/sample_low_short.ogg-69a5282da27aef9048d858e131081e79.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0
