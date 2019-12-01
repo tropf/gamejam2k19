@@ -4,7 +4,7 @@
 [ext_resource path="res://scenes/HUD.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/Wall.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/gravity_point.tscn" type="PackedScene" id=4]
-[ext_resource path="res://assets/graphics/wallpaper.png" type="Texture" id=5]
+[ext_resource path="res://assets/graphics/bg.svg" type="Texture" id=5]
 [ext_resource path="res://scenes/countdown.tscn" type="PackedScene" id=6]
 [ext_resource path="res://assets/sounds/gamejam2k19_1.ogg" type="AudioStream" id=7]
 
@@ -211,12 +211,12 @@ func rgh_rm(id):
 
 func _input(event):
 	if event is InputEventMouseButton:
-		if event.pressed and BUTTON_RIGHT == event.button_mask:
+		if event.pressed and (BUTTON_RIGHT & event.button_mask) != 0:
 			use_power_stop()
 	
 	if event is InputEventMouse:
 		var old_clicked = clicked
-		clicked = (BUTTON_LEFT == event.button_mask)
+		clicked = (0 != (BUTTON_LEFT & event.button_mask))
 			
 		# escaped allowed area -> treat like not clicked
 		if event.position.x > screen_size.x * allowed_x:
@@ -239,7 +239,7 @@ func _input(event):
 	if event is InputEventMouse:
 		$area_forbidden_marker.hide()
 		if event.position.x > screen_size.x * allowed_x:
-			if BUTTON_LEFT == event.button_mask:
+			if (BUTTON_LEFT & event.button_mask) != 0:
 				$area_forbidden_marker.show()
 		
    	# Print the size of the viewport
