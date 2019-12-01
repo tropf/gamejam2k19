@@ -48,6 +48,10 @@ func new_ball1(pos = null, lvel = Vector2(0, 0), avel = 0):
 	ball1.set_continuous_collision_detection_mode(2)
 	add_child(ball1)
 
+func max_score_reached():
+	Global.won = ($HUD.score.x >= $HUD.max_score)
+	get_tree().change_scene_to(preload(\"res://scenes/endscreen.tscn\"))
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# remove ball2/3
@@ -79,6 +83,7 @@ func _ready():
 	Global.connect(\"i_lost\", self, \"recv_enemy_lost\")
 	
 	$Countdown.connect(\"done\", self, \"countdown_done\")
+	$HUD.connect(\"max_score_reached\", self, \"max_score_reached\")
 	
 	# in case network connection: synchronized start procedure
 	if Global.peer:
