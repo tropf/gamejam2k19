@@ -13,6 +13,7 @@ var peer
 var main_scene = preload(\"res://scenes/game_area.tscn\")
 var menu_scene = preload(\"res://scenes/Main_menu.tscn\")
 var lvl_select_scene = preload(\"res://scenes/lvl_selection.tscn\")
+#var current_level_instance = null
 var current_level_instance = null
 var won = false
 var rng
@@ -53,6 +54,12 @@ func load_lvl():
 		current_level_instance = null
 	elif 2 == current_lvl_num:
 		current_level_instance = preload(\"res://scenes/level2.tscn\")
+	elif 3 == current_lvl_num:
+		current_level_instance = preload(\"res://scenes/level3.tscn\")
+	elif 4 == current_lvl_num:
+		current_level_instance = preload(\"res://scenes/level4.tscn\")
+	elif 5 == current_lvl_num:
+		current_level_instance = preload(\"res://scenes/level5.tscn\")
 	get_tree().change_scene_to(preload(\"res://scenes/game_area.tscn\"))
 	
 

@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://assets/graphics/tileset.tres" type="TileSet" id=1]
+
+[node name="Level_tiles_1" type="Node2D"]
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 32 )
+format = 1
+tile_data = PoolIntArray( 327698, 2, 0, 393233, 2, 0, 393234, 1610612736, 0, 458768, 2, 0, 458769, 1610612736, 0, 524303, 2, 0, 524304, 1610612736, 0, 589838, 2, 0, 589839, 1610612736, 0, 655373, 2, 0, 655374, 1610612736, 0, 720908, 2, 0, 720909, 1610612736, 0, 786444, 1610612736, 0, 851980, 0, 0 )
+
+[node name="TileMap2" type="TileMap" parent="."]
+position = Vector2( 1024, 608 )
+rotation = 3.14159
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 32 )
+format = 1
+tile_data = PoolIntArray( 327698, 2, 0, 393233, 2, 0, 393234, 1610612736, 0, 458768, 2, 0, 458769, 1610612736, 0, 524303, 2, 0, 524304, 1610612736, 0, 589838, 2, 0, 589839, 1610612736, 0, 655373, 2, 0, 655374, 1610612736, 0, 720908, 2, 0, 720909, 1610612736, 0, 786444, 1610612736, 0, 851980, 0, 0 )
