@@ -5,9 +5,7 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = \"text\"
+var text = \"\"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -32,20 +30,33 @@ func recv_lvl_selection(lvl_num):
 func connection_done():
 	echo_status(\"disconnected.\")
 	get_node(\"Panel/LineEdit\").editable = true
+	$Panel/Button.disabled = false
 
 func echo_status(msg):
 	get_node(\"Panel/Status\").text = msg
 
-func _on_LineEdit_text_entered(new_text):
+func start_connection():
 	var re = RegEx.new()
 	re.compile(\"^([0-9]{1,3}[.]){3}[0-9]{1,3}$\")
-	if !re.search(new_text):
+	if !re.search(text):
+		$Panel/Status.text = \"Please, enter proper IP address!\"
 		return
 	
 	get_node(\"Panel/LineEdit\").editable = false
+	$Panel/Button.disabled = true
 	echo_status(\"connecting...\")
 	
-	Global.init_client(new_text)
+	Global.init_client(text)
+
+func _on_LineEdit_text_entered(new_text):
+	start_connection()
+
+func _on_Button_pressed():
+	start_connection()
+
+func _on_LineEdit_text_changed(new_text):
+	text = new_text
+	$Panel/Status.text = \"\"
 "
 
 [node name="gui_client" type="Node2D"]
@@ -56,17 +67,45 @@ margin_right = 1024.0
 margin_bottom = 600.0
 
 [node name="LineEdit" type="LineEdit" parent="Panel"]
-margin_left = 220.489
-margin_top = 281.509
-margin_right = 793.489
-margin_bottom = 377.509
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = 200.0
+margin_top = -93.5
+margin_right = -200.0
+margin_bottom = -8.5
 custom_fonts/font = ExtResource( 1 )
+align = 1
 placeholder_text = "IP"
 
 [node name="Status" type="Label" parent="Panel"]
-margin_left = 217.783
-margin_top = 196.35
-margin_right = 799.783
-margin_bottom = 277.35
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -261.0
+margin_bottom = -186.0
 custom_fonts/font = ExtResource( 1 )
+align = 1
+
+[node name="Status2" type="Label" parent="Panel"]
+anchor_right = 1.0
+margin_top = 74.0
+margin_bottom = 149.0
+custom_fonts/font = ExtResource( 1 )
+text = "Enter server IP address"
+align = 1
+
+[node name="Button" type="Button" parent="Panel"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -153.5
+margin_top = -142.0
+margin_right = 153.5
+margin_bottom = -58.0
+custom_fonts/font = ExtResource( 1 )
+text = "connect"
+[connection signal="text_changed" from="Panel/LineEdit" to="." method="_on_LineEdit_text_changed"]
 [connection signal="text_entered" from="Panel/LineEdit" to="." method="_on_LineEdit_text_entered"]
+[connection signal="pressed" from="Panel/Button" to="." method="_on_Button_pressed"]
