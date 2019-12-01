@@ -19,7 +19,7 @@ var ball_responsible = true
 var ball1 = null
 var startpos
 var allowed_x = 0.45
-var remote_thinks_were_dead = false
+var ammo_stop_power = 3
 
 func ball_update_mode():
 	if ball1:
@@ -32,8 +32,8 @@ func ball_update_mode():
 
 func new_ball1(pos = null, lvel = Vector2(0, 0), avel = 0):
 	if ball1:
-		ball1.queue_free()
 		Global.gravityobjects.erase(ball1)
+		ball1.queue_free()
 
 	ball1 = preload(\"res://scenes/Ball.tscn\").instance()
 	ball1.connect(\"hit\", self, \"ball_hit\")
@@ -47,7 +47,7 @@ func new_ball1(pos = null, lvel = Vector2(0, 0), avel = 0):
 	ball1.linear_velocity = lvel
 	ball1.angular_velocity = avel
 	ball_update_mode()
-	if Global.peer == null:
+	if Global.peer == null and pos == null:
 		ball1.position = startpos
 	ball1.set_continuous_collision_detection_mode(2)
 	add_child(ball1)
@@ -85,6 +85,7 @@ func _ready():
 	Global.connect(\"br_your_turn\", self, \"recv_br_your_turn\")
 	Global.connect(\"br_pos\", self, \"recv_br_pos\")
 	Global.connect(\"i_lost\", self, \"recv_enemy_lost\")
+	Global.connect(\"use_stop_power\", self, \"recv_use_power_stop\")
 	
 	$Countdown.connect(\"done\", self, \"countdown_done\")
 	$HUD.connect(\"max_score_reached\", self, \"max_score_reached\")
@@ -183,12 +184,13 @@ func rgh_rm(id):
 	$RemoteGravityPoint.position = Vector2(-444444444444, 444444444444)
 
 func _input(event):
+	if event is InputEventMouseButton:
+		if event.pressed and BUTTON_RIGHT == event.button_mask:
+			use_power_stop()
+	
 	if event is InputEventMouse:
 		var old_clicked = clicked
-		if event is InputEventMouseButton:
-			clicked = event.pressed
-		elif event is InputEventMouseMotion:
-			clicked = (0 != event.button_mask)
+		clicked = (BUTTON_LEFT == event.button_mask)
 			
 		# escaped allowed area -> treat like not clicked
 		if event.position.x > screen_size.x * allowed_x:
@@ -211,17 +213,25 @@ func _input(event):
 	if event is InputEventMouse:
 		$area_forbidden_marker.hide()
 		if event.position.x > screen_size.x * allowed_x:
-			if event is InputEventMouseButton:
-				if event.pressed:
-					$area_forbidden_marker.show()
-			if event is InputEventMouseMotion:
-				if 0 != event.button_mask:
-					$area_forbidden_marker.show()
-		
+			if BUTTON_LEFT == event.button_mask:
+				$area_forbidden_marker.show()
 		
    	# Print the size of the viewport
 	#print(\"Viewport Resolution is: \", get_viewport_rect().size)
 	pass # Replace with function body.
+
+func recv_use_power_stop():
+	if ball_responsible:
+		new_ball1(ball1.position)
+
+func use_power_stop():
+	if ammo_stop_power > 0:
+		ammo_stop_power -= 1
+		if ball_responsible:
+			new_ball1(ball1.position)
+		else:
+			# send rpc
+			Global.send_use_stop_power()
 
 func move_gravity_hole(position):
 	if clicked:
@@ -250,7 +260,7 @@ func _process(delta):
 		Global.send_br_pos(ball1.position, ball1.linear_velocity, ball1.angular_velocity)
 		# check if still reponsible
 		# if no -> handover
-		var handover_margin = 0.1
+		var handover_margin = 0.045
 		if screen_size.x * (0.5 + handover_margin) < ball1.position.x:
 			print(\"current x: \", ball1.position.x, \"; handover margin: \", screen_size.x * (0.5 + handover_margin))
 			# send handover
