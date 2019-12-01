@@ -23,6 +23,7 @@ signal rgh_rm
 signal br_your_turn
 signal br_pos
 signal i_lost
+signal use_stop_power
 
 func _ready():
 	get_tree().connect(\"network_peer_connected\", self, \"_player_connected\")
@@ -116,7 +117,13 @@ func send_i_lost():
 	rpc(\"i_lost\")
 
 remote func i_lost():
-	emit_signal(\"i_lost\")"
+	emit_signal(\"i_lost\")
+	
+func send_use_stop_power():
+	rpc(\"use_stop_power\")
+
+remote func use_stop_power():
+	emit_signal(\"use_stop_power\")"
 
 [node name="Global" type="Node2D"]
 script = SubResource( 1 )
