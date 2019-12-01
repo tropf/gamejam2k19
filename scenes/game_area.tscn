@@ -48,7 +48,7 @@ func hit_powerup():
 	powerup.queue_free()
 	powerup = null
 	ammo_stop_power += 1
-	$HUD.set_powerup_stop_count(ammo_stop_power)
+	$HUD_overlay/HUD.set_powerup_stop_count(ammo_stop_power)
 		
 
 func new_ball1(pos = null, lvel = Vector2(0, 0), avel = 0):
@@ -78,7 +78,7 @@ func new_ball1(pos = null, lvel = Vector2(0, 0), avel = 0):
 	add_child(ball1)
 
 func max_score_reached():
-	Global.won = ($HUD.score.x >= $HUD.max_score)
+	Global.won = ($HUD_overlay/HUD.score.x >= $HUD_overlay/HUD.max_score)
 	get_tree().change_scene_to(preload(\"res://scenes/endscreen.tscn\"))
 
 # Called when the node enters the scene tree for the first time.
@@ -94,7 +94,7 @@ func _ready():
 	remove_child($Ball2)
 	remove_child($Ball3)
 	
-	$HUD.set_powerup_stop_count(ammo_stop_power)
+	$HUD_overlay/HUD.set_powerup_stop_count(ammo_stop_power)
 	screen_size = get_viewport_rect().size
 	startpos = Vector2(screen_size.x / 8, screen_size.y / 2)
 	new_ball1()
@@ -117,7 +117,7 @@ func _ready():
 	Global.connect(\"use_stop_power\", self, \"recv_use_power_stop\")
 	
 	$Countdown.connect(\"done\", self, \"countdown_done\")
-	$HUD.connect(\"max_score_reached\", self, \"max_score_reached\")
+	$HUD_overlay/HUD.connect(\"max_score_reached\", self, \"max_score_reached\")
 	
 	# in case network connection: synchronized start procedure
 	if Global.peer:
@@ -250,15 +250,15 @@ func _input(event):
 	pass # Replace with function body.
 
 func recv_use_power_stop():
-	$HUD.indicate_powerup_opponent()
+	$HUD_overlay/HUD.indicate_powerup_opponent()
 	if ball_responsible:
 		new_ball1(ball1.position)
 
 func use_power_stop():
 	if ammo_stop_power > 0:
 		ammo_stop_power -= 1
-		$HUD.set_powerup_stop_count(ammo_stop_power)
-		$HUD.indicate_powerup_me()
+		$HUD_overlay/HUD.set_powerup_stop_count(ammo_stop_power)
+		$HUD_overlay/HUD.indicate_powerup_me()
 		
 		if ball_responsible:
 			new_ball1(ball1.position)
@@ -326,7 +326,7 @@ func ball_hit(body):
 func win():
 	if !Global.peer:
 		new_ball1()
-		$HUD.change_score(1, 0)
+		$HUD_overlay/HUD.change_score(1, 0)
 		do_countdown()
 	
 func lose():
@@ -334,14 +334,14 @@ func lose():
 	# award enemy a point
 	new_ball1()
 	maybe_spawn_powerup()
-	$HUD.change_score(0,1)
+	$HUD_overlay/HUD.change_score(0,1)
 	Global.send_i_lost()
 	do_countdown()
 	
 func recv_enemy_lost():
 	# don't do any ball handling; will be done on other (responsible) side
 	do_countdown()
-	$HUD.change_score(1,0)"
+	$HUD_overlay/HUD.change_score(1,0)"
 
 [node name="World" type="Node2D"]
 script = SubResource( 1 )
@@ -390,6 +390,9 @@ pause_mode = 2
 stream = ExtResource( 6 )
 volume_db = -10.0
 
-[node name="HUD" parent="." instance=ExtResource( 7 )]
+[node name="HUD_overlay" type="Node2D" parent="."]
+z_index = 4096
+
+[node name="HUD" parent="HUD_overlay" instance=ExtResource( 7 )]
 margin_top = 9.0
 [connection signal="game_over" from="." to="." method="_on_World_game_over"]
