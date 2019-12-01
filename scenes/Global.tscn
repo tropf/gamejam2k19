@@ -8,7 +8,7 @@ script/source = "extends Node2D
 # list of gameobjects, which will interact with gravity
 # add on spawn, delete when objects are destroyed !
 var gravityobjects=[]
-export var gravity = 1000000000
+export var gravity = 0.07 * 100000000
 var peer
 var main_scene = preload(\"res://scenes/game_area.tscn\")
 var won = false

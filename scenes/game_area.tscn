@@ -276,11 +276,11 @@ margin_top = 9.0
 
 [node name="WallUp" parent="." instance=ExtResource( 2 )]
 position = Vector2( 512.746, 25.6701 )
-scale = Vector2( 0.2, 0.1 )
+scale = Vector2( 1, 0.1 )
 
 [node name="WallDown" parent="." instance=ExtResource( 2 )]
 position = Vector2( 511.075, 576.266 )
-scale = Vector2( 0.2, 0.1 )
+scale = Vector2( 1, 0.1 )
 
 [node name="GravityPoint" parent="." instance=ExtResource( 3 )]
 modulate = Color( 0.101961, 0, 1, 1 )

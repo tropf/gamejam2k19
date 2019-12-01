@@ -5,7 +5,7 @@ extends Control
 # var b = "text"
 
 var score = Vector2(0, 0)
-var max_score = 3
+var max_score = 17
 
 signal max_score_reached
 
