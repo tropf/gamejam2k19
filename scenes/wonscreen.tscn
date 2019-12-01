@@ -39,12 +39,3 @@ text = "lol ez"
 [node name="won_music_player" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 2 )
 volume_db = -10.0
-
-[node name="Button" type="Button" parent="."]
-margin_left = 233.115
-margin_top = 356.147
-margin_right = 789.115
-margin_bottom = 510.147
-theme = ExtResource( 1 )
-text = "main menu"
-[connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]
