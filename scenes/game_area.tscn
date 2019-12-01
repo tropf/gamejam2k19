@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://scenes/HUD.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/Wall.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/gravity_point.tscn" type="PackedScene" id=3]
 [ext_resource path="res://assets/graphics/wallpaper.png" type="Texture" id=4]
+[ext_resource path="res://scenes/countdown.tscn" type="PackedScene" id=5]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
@@ -29,6 +30,7 @@ func new_ball1(pos = null, lvel = Vector2(0, 0), avel = 0):
 	if ball1:
 		ball1.queue_free()
 		Global.gravityobjects.erase(ball1)
+
 	ball1 = preload(\"res://scenes/Ball.tscn\").instance()
 	ball1.connect(\"hit\", self, \"ball_hit\")
 	if pos == null:
@@ -76,6 +78,8 @@ func _ready():
 	Global.connect(\"br_pos\", self, \"recv_br_pos\")
 	Global.connect(\"i_lost\", self, \"recv_enemy_lost\")
 	
+	$Countdown.connect(\"done\", self, \"countdown_done\")
+	
 	# in case network connection: synchronized start procedure
 	if Global.peer:
 		print(\"real mode\")
@@ -87,12 +91,31 @@ func _ready():
 			ball_responsible = false
 		ball_update_mode()
 		
-		start_countdown()
+		indicate_rdy()
 	else:
 		print(\"testing mode\")
 		start_game()
 
-func start_countdown():
+func countdown_done():
+	$Countdown.hide()
+	if ! Input.is_mouse_button_pressed(BUTTON_LEFT):
+		clicked = false
+	if clicked:
+		var p = get_viewport().get_mouse_position()
+		$GravityPoint.position = p
+		Global.send_rgh_spawn(1, p)
+	get_tree().set_pause(false)
+
+func do_countdown():
+	if clicked:
+		Global.send_rgh_rm(1)
+		$GravityPoint.position = Vector2(-8888888, 888888888888)
+		
+	get_tree().set_pause(true)
+	$Countdown.show()
+	$Countdown.start()
+
+func indicate_rdy():
 	# situation: i am client, i indicate to server that i am rdy
 	print(\"sending rdy signal...\")
 	Global.send_indicate_rdy()
@@ -126,7 +149,7 @@ func start_game():
 		# testing only
 		ball1.position = startpos
 	ball_update_mode()
-	get_tree().set_pause(false)
+	do_countdown()
 
 func remote_pos_to_local(rpos):
 	return screen_size - rpos
@@ -156,6 +179,10 @@ func _input(event):
 		else:
 			Global.send_rgh_rm(1)
 	elif event is InputEventMouseMotion:
+		if 0 == event.button_mask:
+			clicked = false
+			Global.send_rgh_rm(1)
+			move_gravity_hole(Vector2(-66666666, -6666666))
 		if clicked:
 			move_gravity_hole(event.position)
 			Global.send_rgh_mv(1, event.position)
@@ -221,6 +248,7 @@ func win():
 	if !Global.peer:
 		new_ball1()
 		$HUD.change_score(1, 0)
+		do_countdown()
 	
 func lose():
 	# respawn ball
@@ -228,9 +256,11 @@ func lose():
 	new_ball1()
 	$HUD.change_score(0,1)
 	Global.send_i_lost()
+	do_countdown()
 	
 func recv_enemy_lost():
 	# don't do any ball handling; will be done on other (responsible) side
+	do_countdown()
 	$HUD.change_score(1,0)"
 
 [node name="World" type="Node2D"]
@@ -265,4 +295,6 @@ centered = false
 __meta__ = {
 "_edit_lock_": true
 }
+
+[node name="Countdown" parent="." instance=ExtResource( 5 )]
 [connection signal="game_over" from="." to="." method="_on_World_game_over"]
