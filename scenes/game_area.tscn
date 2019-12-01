@@ -19,6 +19,7 @@ var ball_responsible = true
 var ball1 = null
 var startpos
 var allowed_x = 0.45
+var remote_thinks_were_dead = false
 
 func ball_update_mode():
 	if ball1:
@@ -182,30 +183,40 @@ func rgh_rm(id):
 	$RemoteGravityPoint.position = Vector2(-444444444444, 444444444444)
 
 func _input(event):
-	if event is InputEventMouseButton:
-		#$GravityHole.position = event.position
-		clicked = event.pressed
-		move_gravity_hole(event.position)
-		if clicked:
-			Global.send_rgh_spawn(1, event.position)
-		else:
-			Global.send_rgh_rm(1)
-	elif event is InputEventMouseMotion:
-		if 0 == event.button_mask:
-			clicked = false
-			Global.send_rgh_rm(1)
-			move_gravity_hole(Vector2(-66666666, -6666666))
-		if clicked:
-			move_gravity_hole(event.position)
-			Global.send_rgh_mv(1, event.position)
 	if event is InputEventMouse:
-		if clicked:
-			if event.position.x > screen_size.x * allowed_x:
-				$area_forbidden_marker.show()
-			else:
-				$area_forbidden_marker.hide()
-		else:
-			$area_forbidden_marker.hide()
+		var old_clicked = clicked
+		if event is InputEventMouseButton:
+			clicked = event.pressed
+		elif event is InputEventMouseMotion:
+			clicked = (0 != event.button_mask)
+			
+		# escaped allowed area -> treat like not clicked
+		if event.position.x > screen_size.x * allowed_x:
+			clicked = false
+		
+		# not clicked -> not clicked: don't do anything
+		# not clicked -> clicked: spawn & mv
+		if !old_clicked and clicked:
+			Global.send_rgh_spawn(1, event.position)
+			move_gravity_hole(event.position)
+		# clicked -> not clicked: rm
+		elif old_clicked and !clicked:
+			Global.send_rgh_rm(1)
+			move_gravity_hole(event.position)
+		# clicked -> clicked: mv
+		elif old_clicked and clicked:
+			Global.send_rgh_mv(1, event.position)
+			move_gravity_hole(event.position)
+			
+	if event is InputEventMouse:
+		$area_forbidden_marker.hide()
+		if event.position.x > screen_size.x * allowed_x:
+			if event is InputEventMouseButton:
+				if event.pressed:
+					$area_forbidden_marker.show()
+			if event is InputEventMouseMotion:
+				if 0 != event.button_mask:
+					$area_forbidden_marker.show()
 		
 		
    	# Print the size of the viewport
