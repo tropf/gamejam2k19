@@ -26,13 +26,14 @@ func change_score(playerdiff = 0, enemydiff = 0):
 
 func set_powerup_stop_count(curr):
 	var start_pos = $powerup_pos_marker.position
-	var delta_pos = Vector2(56, 0)
+	var delta_pos = Vector2(42, 0)
 	while curr > powerup_markers.size():
 		# spawn new markers
-		var new_marker = preload("res://scenes/powerup_stop.tscn").instance()
+		var new_marker = $powerup_pos_marker.duplicate()
 		new_marker.set_pause_mode(PAUSE_MODE_STOP)
 		new_marker.position = start_pos + powerup_markers.size() * delta_pos
 		powerup_markers.append(new_marker)
+		new_marker.show()
 		add_child(new_marker)
 		
 	while curr < powerup_markers.size():
