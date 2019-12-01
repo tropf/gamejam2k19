@@ -12,6 +12,8 @@ export var gravity = 0.07 * 100000000
 var peer
 var main_scene = preload(\"res://scenes/game_area.tscn\")
 var menu_scene = preload(\"res://scenes/Main_menu.tscn\")
+var lvl_select_scene = preload(\"res://scenes/lvl_selection.tscn\")
+var current_level_instance = null
 var won = false
 var rng
 

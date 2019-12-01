@@ -17,7 +17,7 @@ func _ready():
 
 func connection_rdy():
 	echo_status(\"peer connected\")
-	get_tree().change_scene_to(Global.main_scene)
+	get_tree().change_scene_to(Global.lvl_select_scene)
 
 func connection_done(id):
 	echo_status(\"peer disconnected\")
