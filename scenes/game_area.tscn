@@ -33,7 +33,7 @@ func ball_update_mode():
 
 func maybe_spawn_powerup():
 	if !powerup:
-		if Global.rng.randf_range(0, 1) < 100*0.2:
+		if Global.rng.randf_range(0, 1) < 0.2:
 			spawn_powerup()
 
 func spawn_powerup():
@@ -247,6 +247,7 @@ func _input(event):
 	pass # Replace with function body.
 
 func recv_use_power_stop():
+	$HUD.indicate_powerup_opponent()
 	if ball_responsible:
 		new_ball1(ball1.position)
 
@@ -254,12 +255,13 @@ func use_power_stop():
 	if ammo_stop_power > 0:
 		ammo_stop_power -= 1
 		$HUD.set_powerup_stop_count(ammo_stop_power)
+		$HUD.indicate_powerup_me()
 		
 		if ball_responsible:
 			new_ball1(ball1.position)
-		else:
-			# send rpc
-			Global.send_use_stop_power()
+		
+		# send rpc
+		Global.send_use_stop_power()
 
 func move_gravity_hole(position):
 	if clicked:

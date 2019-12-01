@@ -24,6 +24,14 @@ func change_score(playerdiff = 0, enemydiff = 0):
 	if score.x >= max_score or score.y >= max_score:
 		emit_signal("max_score_reached")
 
+func indicate_powerup_me():
+	$powerup_indicator_me.show()
+	$Timer.start()
+
+func indicate_powerup_opponent():
+	$powerup_indicator_opponent.show()
+	$Timer.start()
+
 func set_powerup_stop_count(curr):
 	var start_pos = $powerup_pos_marker.position
 	var delta_pos = Vector2(42, 0)
@@ -45,3 +53,9 @@ func set_powerup_stop_count(curr):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+
+
+func _on_Timer_timeout():
+	$powerup_indicator_me.hide()
+	$powerup_indicator_opponent.hide()
+	print("xxx")
