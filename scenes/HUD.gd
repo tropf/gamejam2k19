@@ -23,6 +23,9 @@ func change_score(playerdiff = 0, enemydiff = 0):
 	if score.x >= max_score or score.y >= max_score:
 		emit_signal("max_score_reached")
 
+func set_powerup_stop_count(curr):
+	$GridContainer/TextureRect/PowerUPstop.set_text("%s" % [curr])
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass

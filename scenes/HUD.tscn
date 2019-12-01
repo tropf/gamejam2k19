@@ -57,7 +57,7 @@ margin_right = 64.0
 margin_bottom = 64.0
 texture = ExtResource( 3 )
 
-[node name="Label" type="Label" parent="GridContainer/TextureRect"]
+[node name="PowerUPstop" type="Label" parent="GridContainer/TextureRect"]
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
