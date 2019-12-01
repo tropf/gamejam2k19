@@ -21,10 +21,9 @@ func _physics_process(delta):
 	var force = Vector2(0, 0)
 	# Apply each force
 	for i in Global.gravityobjects:
-		#applied_force = (Global.gravity * (mass * i.get_node(\"RigidBody2D\").get_mass()) * delta)
-		if is_other_obj(i):
-			force += i.mass * calc_force_btw_obj(i)
-	#print(\"Force: \", force)
+		if is_instance_valid(i):
+			if is_other_obj(i):
+				force += i.mass * calc_force_btw_obj(i)
 	set_applied_force(delta * force)
 	
 func calc_force_btw_obj(ball):
