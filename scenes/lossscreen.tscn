@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/ui/gravity_theme.tres" type="Theme" id=1]
+[ext_resource path="res://assets/sounds/gamejam2k19_lose.ogg" type="AudioStream" id=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$loss_music.stream.loop = false
+	$loss_music.play()
+
+func _on_Button_pressed():
+	get_tree().change_scene_to(Global.menu_scene)
+"
+
+[node name="lossscreen" type="Node2D"]
+script = SubResource( 1 )
+
+[node name="Panel" type="Panel" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[node name="Label" type="Label" parent="Panel"]
+margin_left = 400.79
+margin_top = 230.311
+margin_right = 598.79
+margin_bottom = 305.311
+theme = ExtResource( 1 )
+text = "rip m8"
+
+[node name="Button" type="Button" parent="Panel"]
+margin_left = 294.755
+margin_top = 410.482
+margin_right = 742.755
+margin_bottom = 523.482
+theme = ExtResource( 1 )
+text = "main menu"
+
+[node name="loss_music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 2 )
+volume_db = -10.0
+[connection signal="pressed" from="Panel/Button" to="." method="_on_Button_pressed"]

@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://assets/ui/gravity_theme.tres" type="Theme" id=1]
 [ext_resource path="res://assets/graphics/wallpaper.png" type="Texture" id=2]
+[ext_resource path="res://assets/sounds/gamejam2k19_lobby2.ogg" type="AudioStream" id=3]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
@@ -22,15 +23,15 @@ func _ready():
 
 func _on_Button_server_pressed():
 	var new_scene = preload(\"res://scenes/gui_server.tscn\")
-	get_tree().change_scene_to(new_scene)
+	add_child(new_scene.instance())
 
 
 func _on_Button_client_pressed():
 	var new_scene = preload(\"res://scenes/gui_client.tscn\")
-	get_tree().change_scene_to(new_scene)
+	add_child(new_scene.instance())
 "
 
-[node name="HUD" type="Control"]
+[node name="Main_menu" type="Control"]
 margin_right = 1024.0
 margin_bottom = 600.0
 theme = ExtResource( 1 )
@@ -77,5 +78,10 @@ margin_top = 50.0
 margin_right = 125.0
 margin_bottom = 131.0
 text = "Client"
+
+[node name="lobby_music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+volume_db = -25.0
+autoplay = true
 [connection signal="pressed" from="Button_server" to="." method="_on_Button_server_pressed"]
 [connection signal="pressed" from="Button_client" to="." method="_on_Button_client_pressed"]
