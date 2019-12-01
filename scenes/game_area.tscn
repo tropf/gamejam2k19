@@ -83,6 +83,9 @@ func max_score_reached():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if Global.current_level_instance:
+		add_child(Global.current_level_instance.instance())
+	
 	# remove ball2/3
 	Global.gravityobjects.erase($Ball1)
 	Global.gravityobjects.erase($Ball2)

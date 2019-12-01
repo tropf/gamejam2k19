@@ -22,7 +22,7 @@ func _ready():
 
 
 func _on_Button_server_pressed():
-	var new_scene = preload(\"res://scenes/gui_server.tscn\")
+	var new_scene = preload(\"res://scenes/lvl_selection.tscn\")
 	add_child(new_scene.instance())
 
 

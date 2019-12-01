@@ -16,6 +16,7 @@ var lvl_select_scene = preload(\"res://scenes/lvl_selection.tscn\")
 var current_level_instance = null
 var won = false
 var rng
+var current_lvl_num = 1
 
 signal connection_established
 signal connection_closed
@@ -28,6 +29,7 @@ signal br_your_turn
 signal br_pos
 signal i_lost
 signal use_stop_power
+signal lvl_select
 
 func _ready():
 	get_tree().connect(\"network_peer_connected\", self, \"_player_connected\")
@@ -43,6 +45,17 @@ func get_enet():
 		peer = null
 	return NetworkedMultiplayerENet.new()
 	
+	
+func load_lvl():
+	# read lvl num
+	# prepare lvl accordingly
+	if 1 == current_lvl_num:
+		current_level_instance = null
+	elif 2 == current_lvl_num:
+		current_level_instance = preload(\"res://scenes/level2.tscn\")
+	get_tree().change_scene_to(preload(\"res://scenes/game_area.tscn\"))
+	
+
 func init_client(server_ip):
 	peer = get_enet()
 	peer.create_client(server_ip, 12395)
@@ -59,6 +72,12 @@ func send_ping():
 
 remote func recv_ping():
 	print(\"received ping\")
+
+func send_lvl_select(lvl_num):
+	rpc(\"lvl_select\", lvl_num)
+		
+remote func lvl_select(lvl_num):
+	emit_signal(\"lvl_select\", lvl_num)
 
 func is_server():
 	return get_tree().is_network_server()

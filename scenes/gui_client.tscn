@@ -14,6 +14,7 @@ func _ready():
 	Global.peer = NetworkedMultiplayerENet.new()
 	Global.connect(\"connection_established\", self, \"connection_rdy\")
 	Global.connect(\"connection_closed\", self, \"connection_done\")
+	Global.connect(\"lvl_select\", self, \"recv_lvl_selection\")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
@@ -22,7 +23,11 @@ func _ready():
 func connection_rdy():
 	echo_status(\"connected.\")
 	# initialize scene
-	get_tree().change_scene_to(Global.main_scene)
+	# wait for rpc to prepare lvl
+
+func recv_lvl_selection(lvl_num):
+	Global.current_lvl_num = lvl_num
+	Global.load_lvl()
 		
 func connection_done():
 	echo_status(\"disconnected.\")

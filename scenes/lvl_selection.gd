@@ -10,8 +10,11 @@ func _input(event):
 	if event is InputEventMouse:
 		if BUTTON_LEFT & event.button_mask:
 			print("level ", selected_level, " selected")
-			if selected_level == 2:
-				Global.current_level_instance = preload("res://scenes/level2.tscn").instance()
+			Global.current_lvl_num = selected_level
+			
+			var new_scene = preload("res://scenes/gui_server.tscn")
+			$MarginContainer.hide()
+			add_child(new_scene.instance())
 
 func _on_TextureRect_mouse_entered():
 	selected_level = 1
